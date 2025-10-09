@@ -5,7 +5,7 @@ import Footer from "@/components/landing/Footer";
 
 export default function Home() {
   return (
-    <main className="font-sans relative">
+    <main className="font-manrope relative">
       <Header />
       <Hero />
       <Features />
