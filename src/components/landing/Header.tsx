@@ -1,3 +1,4 @@
+import Link from "next/link"
 export default function Header() {
     return (
         <header className="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
@@ -13,16 +14,11 @@ export default function Header() {
                         </svg>
                         <h2 className="satoshi-font text-2xl font-bold text-content-light dark:text-content-dark">PayInvoice</h2>
                     </div>
-                    {/* <ul className="hidden items-center gap-8 md:flex">
-                        <a className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary transition-colors" href="#features">Features</a>
-                        <a className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary transition-colors" href="#pricing">Pricing</a>
-                        <a className="text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary transition-colors" href="#testimonials">Testimonials</a>
-                    </ul> */}
                     <div className="flex items-center gap-4">
-                        <a className="hidden sm:inline-block text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary transition-colors" href="#">Log in</a>
-                        <a className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-transform hover:scale-105" href="#">
+                        <Link className="hidden sm:inline-block text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary transition-colors" href="#">Log in</Link>
+                        <Link className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-transform hover:scale-105" href="#">
                             Sign Up
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </nav>

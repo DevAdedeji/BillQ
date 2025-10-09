@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function Footer() {
     return (
         <footer className="border-t border-border-light dark:border-border-dark">
@@ -14,9 +16,8 @@ export default function Footer() {
                         <h2 className="satoshi-font text-2xl font-bold text-content-light dark:text-content-dark">PayInvoice</h2>
                     </div>
                     <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
-                        <a className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Privacy</a>
-                        <a className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Login</a>
-                        <a className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Signup</a>
+                        <Link className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Login</Link>
+                        <Link className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Signup</Link>
                     </div>
                     <p className="text-sm text-muted-light dark:text-muted-dark">© {new Date().getFullYear()} PayInvoice. All rights reserved.</p>
                 </div>
