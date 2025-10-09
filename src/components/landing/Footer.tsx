@@ -11,14 +11,14 @@ export default function Footer() {
                             <path d="M8 9.5C8 9.22386 8.22386 9 8.5 9H15.5C15.7761 9 16 9.22386 16 9.5V10.5C16 10.7761 15.7761 11 15.5 11H8.5C8.22386 11 8 10.7761 8 10.5V9.5Z"></path>
                             <path d="M8 13.5C8 13.2239 8.22386 13 8.5 13H15.5C15.7761 13 16 13.2239 16 13.5V14.5C16 14.7761 15.7761 15 15.5 15H8.5C8.22386 15 8 14.7761 8 14.5V13.5Z"></path>
                         </svg>
-                        <h2 className="satoshi-font text-2xl font-bold text-content-light dark:text-content-dark">InstaInvoice</h2>
+                        <h2 className="satoshi-font text-2xl font-bold text-content-light dark:text-content-dark">PayInvoice</h2>
                     </div>
                     <div className="flex flex-wrap justify-center gap-x-6 gap-y-2">
                         <a className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Privacy</a>
                         <a className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Login</a>
                         <a className="text-sm text-muted-light dark:text-muted-dark hover:text-primary" href="#">Signup</a>
                     </div>
-                    <p className="text-sm text-muted-light dark:text-muted-dark">© {new Date().getFullYear()} InstaInvoice. All rights reserved.</p>
+                    <p className="text-sm text-muted-light dark:text-muted-dark">© {new Date().getFullYear()} PayInvoice. All rights reserved.</p>
                 </div>
             </div>
         </footer>
