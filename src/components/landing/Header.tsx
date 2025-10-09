@@ -15,8 +15,8 @@ export default function Header() {
                         <h2 className="satoshi-font text-2xl font-bold text-content-light dark:text-content-dark">PayInvoice</h2>
                     </div>
                     <div className="flex items-center gap-4">
-                        <Link className="hidden sm:inline-block text-sm font-medium text-muted-light dark:text-muted-dark hover:text-primary transition-colors" href="#">Log in</Link>
-                        <Link className="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-transform hover:scale-105" href="#">
+                        <Link className="hidden sm:inline-block text-sm font-medium text-muted-light dark:text-muted-dark transition-transform hover:scale-105 px-5 py-2.5 border border-light rounded-full" href="#">Log in</Link>
+                        <Link className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-white shadow-soft transition-transform hover:scale-105" href="#">
                             Sign Up
                         </Link>
                     </div>

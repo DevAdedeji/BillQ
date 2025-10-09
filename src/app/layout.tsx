@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Manrope } from "next/font/google";
+import { Roboto_Slab } from "next/font/google";
 import "./globals.css";
 
-const ManropeFont = Manrope({
-  variable: "--font-manrope",
+const RobotoSlab = Roboto_Slab({
   subsets: ["latin"],
 });
 
@@ -21,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${ManropeFont.variable} antialiased`}
+        className={`${RobotoSlab.className} antialiased`}
       >
         {children}
       </body>
