@@ -8,7 +8,7 @@ const RobotoSlab = Roboto_Slab({
 
 
 export const metadata: Metadata = {
-  title: "Instavoice",
+  title: "Payvoice",
   description: "Invoicing made effortless",
 };
 
@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${RobotoSlab.className} antialiased`}
+        className={`${RobotoSlab.className} antialiased tracking-wide`}
       >
         {children}
       </body>

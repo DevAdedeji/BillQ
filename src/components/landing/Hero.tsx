@@ -1,3 +1,5 @@
+import Link
+    from "next/link"
 export default function Hero() {
     return (
         <section className="relative py-24 sm:py-32 lg:py-40">
@@ -9,12 +11,9 @@ export default function Hero() {
                     A clean, intelligent invoicing web app for freelancers and small businesses. Generate invoices, send payment links, and get paid faster.
                 </p>
                 <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <a className="w-full sm:w-auto rounded-full bg-primary px-8 py-3 text-base font-semibold text-white shadow-soft transition-transform hover:scale-105" href="#">
+                    <Link className="w-full sm:w-auto rounded-full bg-primary px-8 py-3 text-base font-semibold text-white shadow-soft transition-transform hover:scale-105" href="/auth/login">
                         Start Invoicing in Seconds
-                    </a>
-                    <a className="w-full sm:w-auto rounded-full bg-surface-light dark:bg-surface-dark border border-border-light dark:border-border-dark px-8 py-3 text-base font-semibold text-content-light dark:text-content-dark shadow-soft transition-colors hover:bg-primary/10" href="#">
-                        Learn More
-                    </a>
+                    </Link>
                 </div>
             </div>
         </section>
