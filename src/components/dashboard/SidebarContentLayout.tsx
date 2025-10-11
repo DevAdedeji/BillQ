@@ -11,8 +11,14 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
 } from "@/components/ui/sidebar"
+import { usePathname } from "next/navigation"
 
-export function SidebarContentLayout() {
+interface ContentLayoutProps {
+    onLinkSelect?: () => void
+}
+
+export function SidebarContentLayout({ onLinkSelect = () => { } }: ContentLayoutProps) {
+    const pathname = usePathname()
     return (
         <>
             <SidebarHeader className="pt-4">
@@ -26,16 +32,19 @@ export function SidebarContentLayout() {
 
             <SidebarContent className="pt-6">
                 <SidebarMenu>
-                    {dashboardLinks.map((link) => (
-                        <SidebarMenuItem key={link.title}>
-                            <SidebarMenuButton asChild>
-                                <Link href={link.url} className="flex items-center gap-2">
-                                    <link.icon />
-                                    <span>{link.title}</span>
-                                </Link>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    ))}
+                    {dashboardLinks.map((link) => {
+                        const isActive = pathname.startsWith(link.url)
+                        return (
+                            <SidebarMenuItem key={link.title}>
+                                <SidebarMenuButton asChild onClick={onLinkSelect} className={`hover:bg-blue-100 hover:text-primary ${isActive ? 'bg-blue-100 text-primary font-bold' : ''}`}>
+                                    <Link href={link.url} className="flex items-center gap-2">
+                                        <link.icon />
+                                        <span>{link.title}</span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        )
+                    })}
                 </SidebarMenu>
             </SidebarContent>
 
