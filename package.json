@@ -13,7 +13,8 @@
     "test:coverage": "vitest run --coverage",
     "test:component": "vitest run src/components",
     "test:api": "vitest run src/app/api",
-    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma"
+    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
+    "postinstall": "npm run prisma:generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
