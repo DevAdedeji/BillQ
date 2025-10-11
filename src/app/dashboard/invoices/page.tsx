@@ -1,10 +1,9 @@
 export const metadata = {
-    title: "Overview | BillQ Dashboard",
+    title: "Invoices | BillQ Dashboard",
     description: "Manage and send invoices easily with BillQ.",
 }
 
-
-export default function OverviewPage() {
+export default function InvoicesPage() {
     return (
         <div></div>
     )
