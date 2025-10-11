@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
-import { Roboto_Slab } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from "next"
+import { Roboto_Slab } from "next/font/google"
+import "./globals.css"
+import NextAuthProvider from "@/providers/session-provider";
+import { Toaster } from "sonner";
 
 const RobotoSlab = Roboto_Slab({
   subsets: ["latin"],
@@ -8,7 +10,7 @@ const RobotoSlab = Roboto_Slab({
 
 
 export const metadata: Metadata = {
-  title: "Payvoice",
+  title: "PayInvoice",
   description: "Invoicing made effortless",
 };
 
@@ -22,7 +24,10 @@ export default function RootLayout({
       <body
         className={`${RobotoSlab.className} antialiased tracking-wide`}
       >
-        {children}
+        <NextAuthProvider>
+          {children}
+        </NextAuthProvider>
+        <Toaster position="top-right" />
       </body>
     </html>
   );
