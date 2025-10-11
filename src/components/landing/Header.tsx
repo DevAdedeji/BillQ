@@ -8,7 +8,7 @@ export default function Header() {
                 <div className="flex h-20 items-center justify-between">
                     <div className="flex items-center gap-3">
                         <Image src="/logo.svg" height={40} width={40} alt="logo" />
-                        <h2 className="text-2xl font-bold text-content-light dark:text-content-dark">PayInvoice</h2>
+                        <h2 className="text-2xl font-bold text-content-light dark:text-content-dark">BillQ</h2>
                     </div>
                     <div className="flex items-center gap-4">
                         <Link className="hidden sm:inline-block text-sm font-medium text-muted-light dark:text-muted-dark transition-transform hover:scale-105 px-5 py-2.5 border border-light rounded-full" href="/auth/login">Log in</Link>

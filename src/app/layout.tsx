@@ -10,7 +10,7 @@ const RobotoSlab = Roboto_Slab({
 
 
 export const metadata: Metadata = {
-  title: "PayInvoice",
+  title: "BillQ",
   description: "Invoicing made effortless",
 };
 

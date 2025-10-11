@@ -1,12 +1,12 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
-import { PrismaClient } from "@prisma/client"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import bcrypt from "bcryptjs"
-
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma"
 
 const handler = NextAuth({
+    adapter: PrismaAdapter(prisma),
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -19,17 +19,18 @@ const handler = NextAuth({
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials.password) {
-                    throw new Error("Missing credentials")
-                }
+                const { email, password } = credentials ?? {}
+
+                if (!email || !password) throw new Error("Email and password are required")
+
                 const user = await prisma.user.findUnique({
-                    where: { email: credentials.email }
+                    where: { email }
                 })
                 if (!user || !user.password) {
-                    throw new Error("User not found")
+                    throw new Error("Invalid email or password")
                 }
 
-                const isValid = await bcrypt.compare(credentials.password, user.password)
+                const isValid = await bcrypt.compare(password, user.password)
                 if (!isValid) throw new Error("Invalid password")
                 return { ...user }
             }
@@ -40,6 +41,16 @@ const handler = NextAuth({
     },
     session: { strategy: "jwt" },
     secret: process.env.NEXTAUTH_SECRET,
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) token.id = user.id
+            return token
+        },
+        async session({ session, token }) {
+            if (token) session.user.id = token.id as string
+            return session
+        }
+    }
 })
 
 export { handler as GET, handler as POST }

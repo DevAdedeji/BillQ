@@ -12,10 +12,12 @@ import { useForm } from "react-hook-form"
 import { LoginFormInputs, loginSchema } from "@/features/auth/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
+import Image from "next/image"
 import { Spinner } from "@/components/ui/spinner"
 import { useSignIn } from "@/features/auth/hooks"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function LoginPage() {
 
@@ -58,13 +60,24 @@ export default function LoginPage() {
                         </Field>
                     </FieldGroup>
                 </FieldSet>
-                <Button type="submit" disabled={isPending} className="w-full">
-                    {
-                        isPending &&
-                        <Spinner />
-                    }
-                    <span>Login</span>
-                </Button>
+                <div className="flex flex-col gap-2">
+                    <Button type="submit" disabled={isPending} className="w-full">
+                        {
+                            isPending &&
+                            <Spinner />
+                        }
+                        <span>Login</span>
+                    </Button>
+                    <p className="text-center text-sm capitalize">or</p>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => signIn("google", { callbackUrl: "/dashboard/overview" })}
+                        className="w-full flex items-center justify-center gap-2"
+                    >
+                        <Image src="/google.svg" height={20} width={20} alt="Google logo" /> Continue with Google
+                    </Button>
+                </div>
             </form>
             <p className="text-center text-sm mt-6">
                 Don&apos;t have an account?

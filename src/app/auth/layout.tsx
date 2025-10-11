@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <div className="w-full max-w-md space-y-8">
                 <Link href="/" className="flex items-center gap-2 justify-center">
                     <Image src="/logo.svg" height={40} width={40} alt="logo" />
-                    <h2 className="text-2xl font-bold text-content-light dark:text-content-dark">PayInvoice</h2>
+                    <h2 className="text-2xl font-bold text-content-light dark:text-content-dark">BillQ</h2>
                 </Link>
                 <div className="bg-card border border-border p-8 shadow-soft rounded-xl space-y-10">
                     <div className="flex flex-col items-center justify-center text-accent-foreground gap-2">

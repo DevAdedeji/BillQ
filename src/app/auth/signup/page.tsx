@@ -11,11 +11,13 @@ import { useForm } from "react-hook-form"
 import { SignUpFormInputs, signUpSchema } from "@/features/auth/schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import Link from "next/link"
+import Image from "next/image"
 import { Spinner } from "@/components/ui/spinner"
 import { PasswordInput } from "@/components/ui/password-input"
 import { useSignUp } from "@/features/auth/hooks"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 export default function SignUpPage() {
     const { handleSubmit, register, formState: { errors } } = useForm<SignUpFormInputs>({
@@ -70,13 +72,24 @@ export default function SignUpPage() {
                         </Field>
                     </FieldGroup>
                 </FieldSet>
-                <Button type="submit" disabled={isPending} className="w-full">
-                    {
-                        isPending &&
-                        <Spinner />
-                    }
-                    <span>Sign Up</span>
-                </Button>
+                <div className="flex flex-col gap-2">
+                    <Button type="submit" disabled={isPending} className="w-full">
+                        {
+                            isPending &&
+                            <Spinner />
+                        }
+                        <span>Sign Up</span>
+                    </Button>
+                    <p className="text-center text-sm capitalize">or</p>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => signIn("google", { callbackUrl: "/dashboard/overview" })}
+                        className="w-full flex items-center justify-center gap-2"
+                    >
+                        <Image src="/google.svg" height={20} width={20} alt="Google logo" /> Continue with Google
+                    </Button>
+                </div>
             </form>
             <p className="text-center text-sm mt-6">
                 Already have an account?
