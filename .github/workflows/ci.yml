@@ -1,4 +1,4 @@
-name: Build, Test, and Deploy
+name: Test and Deploy to Vercel
 
 on:
   push:
@@ -7,23 +7,22 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  test-and-build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Generate Prisma Client
+      - name: Generate Prisma client
         run: npm run prisma:generate
 
       - name: Run tests
@@ -32,26 +31,18 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: next-build
-          path: .next
-
   deploy:
-    needs: build-and-test
+    needs: test-and-build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          name: next-build
-          path: .next
+          node-version: '20'
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
@@ -59,4 +50,4 @@ jobs:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod --prebuilt'
+          vercel-args: '--prod'
