@@ -18,6 +18,7 @@ import { useSignUp } from "@/features/auth/hooks"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
+import { getErrorMessage } from "@/utils"
 
 export default function SignUpPage() {
     const { handleSubmit, register, formState: { errors } } = useForm<SignUpFormInputs>({
@@ -32,7 +33,7 @@ export default function SignUpPage() {
             router.push("/auth/login")
         },
         onError: (e: unknown) => {
-            const message = e instanceof Error ? e.message : typeof e === "object" && e !== null && "message" in e && typeof (e as { message?: unknown }).message === "string" ? (e as { message: string }).message : String(e)
+            const message = getErrorMessage(e)
             toast.error(message || "Something went wrong")
         },
     })
