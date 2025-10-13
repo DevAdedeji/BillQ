@@ -18,8 +18,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import NewClient from "@/features/clients/components/NewClient"
 import { Skeleton } from "@/components/ui/skeleton"
+import NewClient from "@/features/clients/components/NewClient"
 import { EllipsisVertical } from "lucide-react"
 import { Client, useClients } from "../hooks/useClients"
 import { useState } from "react"
@@ -29,6 +29,27 @@ import { toast } from "sonner"
 import { Spinner } from "@/components/ui/spinner"
 import EditClient from "./EditClient"
 
+function LoadingSkeleton() {
+    return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
+        <div className="flex items-center justify-between">
+            <Skeleton className="h-10 w-[80%] lg:w-[40%] bg-slate-200" />
+            <Skeleton className="w-10 lg:w-20 h-6 bg-slate-200" />
+        </div>
+        <Skeleton className="w-full h-10 bg-slate-200" />
+        {
+            [1, 2, 3].map((i) => (
+                <div key={i} className="grid grid-cols-3 gap-2">
+                    <Skeleton className="h-10 bg-slate-200" />
+                    <Skeleton className="h-10 bg-slate-200" />
+                    <Skeleton className="h-10 bg-slate-200" />
+                </div>
+            )
+            )
+        }
+    </div>
+}
+
+
 export default function ClientsPageContent() {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
@@ -36,7 +57,9 @@ export default function ClientsPageContent() {
     const [selectedClient, setSelectedClient] = useState<Client | null>(null)
 
 
-    const { data: clients, isLoading, isError, refetch } = useClients()
+    const { data: clients, isLoading, isError, refetch, isFetching } = useClients()
+
+    const isDataLoading = isLoading || (!!clients && isFetching)
 
     const refreshDetails = () => {
         setIsDialogOpen(false)
@@ -60,19 +83,8 @@ export default function ClientsPageContent() {
 
     const hasClients = clients && clients.length > 0;
 
-    if (isLoading) return <div className="flex flex-col gap-2">
-        <Skeleton className="w-full bg-slate-300" />
-        {
-            [1, 2, 3].map((i) => (
-                <div key={i} className="grid grid-cols-3 gap-2">
-                    <Skeleton className="bg-slate-300" />
-                    <Skeleton className="bg-slate-300" />
-                    <Skeleton className="bg-slate-300" />
-                </div>
-            )
-            )
-        }
-    </div>
+    if (isDataLoading) return <LoadingSkeleton />
+
     if (isError) return <div></div>
 
     return (

@@ -52,7 +52,7 @@ export default function NewClient({ closeDialog }: NewClientProps) {
             <DialogHeader>
                 <DialogTitle>Create Client</DialogTitle>
             </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                 <FieldSet>
                     <FieldGroup>
                         <Field>
