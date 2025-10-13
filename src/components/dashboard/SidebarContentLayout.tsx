@@ -11,7 +11,10 @@ import {
     SidebarMenuItem,
     SidebarMenuButton,
 } from "@/components/ui/sidebar"
+import { Skeleton } from "../ui/skeleton"
 import { usePathname } from "next/navigation"
+import { User2 } from "lucide-react"
+import { useCurrentUser } from "@/lib/session"
 
 interface ContentLayoutProps {
     onLinkSelect?: () => void
@@ -19,17 +22,9 @@ interface ContentLayoutProps {
 
 export function SidebarContentLayout({ onLinkSelect = () => { } }: ContentLayoutProps) {
     const pathname = usePathname()
+    const { user, isLoading } = useCurrentUser()
     return (
         <>
-            <SidebarHeader className="pt-4">
-                <Link href="/" className="flex items-center gap-2">
-                    <Image src="/logo.svg" height={40} width={40} alt="logo" />
-                    <h2 className="text-2xl font-bold text-content-light dark:text-content-dark">
-                        BillQ
-                    </h2>
-                </Link>
-            </SidebarHeader>
-
             <SidebarContent className="pt-6">
                 <SidebarMenu>
                     {dashboardLinks.map((link) => {
@@ -48,33 +43,26 @@ export function SidebarContentLayout({ onLinkSelect = () => { } }: ContentLayout
                 </SidebarMenu>
             </SidebarContent>
 
-            <SidebarFooter>
-                {/* <SidebarMenu>
-                    <SidebarMenuItem>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <SidebarMenuButton>
-                                    <User2 /> Username
-                                    <ChevronUp className="ml-auto" />
-                                </SidebarMenuButton>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent
-                                side="top"
-                                className="w-[--radix-popper-anchor-width]"
-                            >
-                                <DropdownMenuItem>
-                                    <span>Account</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <span>Billing</span>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <span>Sign out</span>
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </SidebarMenuItem>
-                </SidebarMenu> */}
+            <SidebarFooter className="pb-4">
+                {
+                    !user && isLoading &&
+                    <Skeleton className="h-12 bg-slate-300" />
+                }
+                {
+                    user && !isLoading &&
+                    <div className="flex items-center gap-4">
+                        {
+                            user.image?.length ?
+                                <Image src={user.image} alt={user.name + "profile picture"} height={40} width={40} className="rounded-full" />
+                                :
+                                <User2 />
+                        }
+                        <div className="w-[70%] text-sm flex flex-col gap-2">
+                            <p className="w-full truncate">{user.name}</p>
+                            <p className="w-full truncate">{user.email}</p>
+                        </div>
+                    </div>
+                }
             </SidebarFooter>
         </>
     )

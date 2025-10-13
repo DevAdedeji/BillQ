@@ -46,3 +46,34 @@ model Session {
     expires      DateTime
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Client {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    userId      String
+    name        String
+    email       String
+    companyName String?
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+    Invoice     Invoice[]
+
+    @@unique([userId, email])
+}
+
+model Invoice {
+    id        String        @id @default(auto()) @map("_id") @db.ObjectId
+    userId    String
+    clientId  String        @db.ObjectId
+    client    Client        @relation(fields: [clientId], references: [id])
+    dueDate   DateTime
+    total     Float
+    status    InvoiceStatus @default(PENDING)
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @updatedAt
+}
+
+enum InvoiceStatus {
+    PENDING
+    PAID
+    OVERDUE
+}

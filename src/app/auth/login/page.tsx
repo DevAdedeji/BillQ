@@ -18,6 +18,7 @@ import { useSignIn } from "@/features/auth/hooks"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
+import { getErrorMessage } from "@/utils"
 
 export default function LoginPage() {
 
@@ -33,7 +34,7 @@ export default function LoginPage() {
                 router.push("/dashboard/overview")
             },
             onError: (e: unknown) => {
-                const message = e instanceof Error ? e.message : typeof e === "object" && e !== null && "message" in e && typeof (e as { message?: unknown }).message === "string" ? (e as { message: string }).message : String(e)
+                const message = getErrorMessage(e)
                 toast.error(message || "Something went wrong")
             }
         }
