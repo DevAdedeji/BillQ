@@ -1,7 +1,7 @@
 import { SidebarProvider } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
-import AppTopbar from "@/components/app-topbar"
-import AppBottomBar from "@/components/app-bottombar"
+import { AppSidebar } from "@/components/shared/AppSidebar"
+import AppTopbar from "@/components/shared/AppTopbar"
+import AppBottomBar from "@/components/shared/AppBottombar"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
     return (

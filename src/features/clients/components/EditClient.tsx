@@ -37,7 +37,7 @@ export default function EditClient({ closeDialog, client }: EditClientProps) {
     useEffect(() => {
         reset({
             name: client?.name,
-            companyName: client?.companyName ?? undefined,
+            address: client?.address ?? undefined,
             email: client?.email,
         })
     }, [reset, client])
@@ -45,7 +45,7 @@ export default function EditClient({ closeDialog, client }: EditClientProps) {
 
     const { mutate, isPending } = useEditClient({
         onSuccess: () => {
-            toast.success("Client updates successfully")
+            toast.success("Client updated successfully")
             reset()
             closeDialog()
         },
@@ -56,8 +56,8 @@ export default function EditClient({ closeDialog, client }: EditClientProps) {
     })
 
     const onSubmit = (data: ClientSchemaInputs) => {
-        const { email, name, companyName } = data
-        if (client?.id) mutate({ id: client.id, data: { email, name, companyName } })
+        const { email, name, address } = data
+        if (client?.id) mutate({ id: client.id, data: { email, name, address } })
     }
 
     return (
@@ -69,19 +69,19 @@ export default function EditClient({ closeDialog, client }: EditClientProps) {
                 <FieldSet>
                     <FieldGroup>
                         <Field>
-                            <FieldLabel htmlFor="name">Name</FieldLabel>
+                            <FieldLabel htmlFor="name">Company/Brand Name</FieldLabel>
                             <Input id="name" type="text" placeholder="John Doe" {...register("name")} />
                             {errors.name && <p className="text-error text-xs">{errors.name.message}</p>}
                         </Field>
                         <Field>
-                            <FieldLabel htmlFor="email">Personal/Brand Email Address</FieldLabel>
+                            <FieldLabel htmlFor="email">Company/Brand Email Address</FieldLabel>
                             <Input id="email" type="email" placeholder="example@gmail.com" {...register("email")} />
                             {errors.email && <p className="text-error text-xs">{errors.email.message}</p>}
                         </Field>
                         <Field>
-                            <FieldLabel htmlFor="companyName">Company/Brand Name</FieldLabel>
-                            <Input id="companyName" type="text" placeholder="Brand name" {...register("companyName")} />
-                            {errors.companyName && <p className="text-error text-xs">{errors.companyName.message}</p>}
+                            <FieldLabel htmlFor="address">Company/Brand Address</FieldLabel>
+                            <Input id="address" type="text" placeholder="Enter Address" {...register("address")} />
+                            {errors.address && <p className="text-error text-xs">{errors.address.message}</p>}
                         </Field>
                     </FieldGroup>
                 </FieldSet>
