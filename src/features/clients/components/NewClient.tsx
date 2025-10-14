@@ -44,7 +44,7 @@ export default function NewClient({ closeDialog }: NewClientProps) {
     })
 
     const onSubmit = (data: ClientSchemaInputs) => {
-        mutate({ email: data.email, name: data.name, companyName: data.companyName })
+        mutate({ email: data.email, name: data.name, address: data.address })
     }
 
     return (
@@ -56,7 +56,7 @@ export default function NewClient({ closeDialog }: NewClientProps) {
                 <FieldSet>
                     <FieldGroup>
                         <Field>
-                            <FieldLabel htmlFor="name">Name</FieldLabel>
+                            <FieldLabel htmlFor="name">Company?Brand Name</FieldLabel>
                             <Input id="name" type="text" placeholder="John Doe" {...register("name")} />
                             {errors.name && <p className="text-error text-xs">{errors.name.message}</p>}
                         </Field>
@@ -66,9 +66,9 @@ export default function NewClient({ closeDialog }: NewClientProps) {
                             {errors.email && <p className="text-error text-xs">{errors.email.message}</p>}
                         </Field>
                         <Field>
-                            <FieldLabel htmlFor="companyName">Company/Brand Name</FieldLabel>
-                            <Input id="companyName" type="text" placeholder="Brand name" {...register("companyName")} />
-                            {errors.companyName && <p className="text-error text-xs">{errors.companyName.message}</p>}
+                            <FieldLabel htmlFor="address">Company/Brand Address</FieldLabel>
+                            <Input id="address" type="text" placeholder="Enter Address" {...register("address")} />
+                            {errors.address && <p className="text-error text-xs">{errors.address.message}</p>}
                         </Field>
                     </FieldGroup>
                 </FieldSet>

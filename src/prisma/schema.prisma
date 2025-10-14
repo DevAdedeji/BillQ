@@ -48,32 +48,69 @@ model Session {
 }
 
 model Client {
-    id          String    @id @default(auto()) @map("_id") @db.ObjectId
-    userId      String
-    name        String
-    email       String
-    companyName String?
-    createdAt   DateTime  @default(now())
-    updatedAt   DateTime  @updatedAt
-    Invoice     Invoice[]
+    id        String    @id @default(auto()) @map("_id") @db.ObjectId
+    userId    String
+    name      String
+    email     String
+    address   String?
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    Invoice   Invoice[]
 
     @@unique([userId, email])
 }
 
 model Invoice {
-    id        String        @id @default(auto()) @map("_id") @db.ObjectId
-    userId    String
-    clientId  String        @db.ObjectId
-    client    Client        @relation(fields: [clientId], references: [id])
-    dueDate   DateTime
-    total     Float
-    status    InvoiceStatus @default(PENDING)
-    createdAt DateTime      @default(now())
-    updatedAt DateTime      @updatedAt
+    id            String        @id @default(auto()) @map("_id") @db.ObjectId
+    userId        String
+    invoiceNumber String        @unique
+    clientId      String        @db.ObjectId
+    client        Client        @relation(fields: [clientId], references: [id])
+    subTotal      Float         @default(0)
+    tax           Float         @default(0)
+    discount      Float         @default(0)
+    totalAmount   Float         @default(0)
+    paidAmount    Float         @default(0)
+    dueAmount     Float         @default(0)
+    issueDate     DateTime      @default(now())
+    dueDate       DateTime
+    status        InvoiceStatus @default(PENDING)
+    items         InvoiceItem[]
+    payments      Payment[]
+    notes         String?
+    terms         String?
+    createdAt     DateTime      @default(now())
+    updatedAt     DateTime      @updatedAt
 }
 
 enum InvoiceStatus {
+    DRAFT
     PENDING
+    PARTIALLY_PAID
     PAID
     OVERDUE
+    CANCELLED
+}
+
+model InvoiceItem {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    invoiceId   String   @db.ObjectId
+    invoice     Invoice  @relation(fields: [invoiceId], references: [id])
+    name        String
+    description String?
+    quantity    Int      @default(1)
+    price       Float
+    totalPrice  Float
+    createdAt   DateTime @default(now())
+}
+
+model Payment {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    invoiceId String   @db.ObjectId
+    invoice   Invoice  @relation(fields: [invoiceId], references: [id])
+    amount    Float
+    method    String
+    reference String?
+    status    String
+    createdAt DateTime @default(now())
 }

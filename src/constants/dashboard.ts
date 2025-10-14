@@ -1,11 +1,11 @@
-import { LayoutGrid, Settings, Users, ScrollText } from "lucide-react"
+import { Settings, Users, ScrollText } from "lucide-react"
 
 export const dashboardLinks = [
-    {
-        title: "Overview",
-        url: "/dashboard/overview",
-        icon: LayoutGrid,
-    },
+    // {
+    //     title: "Overview",
+    //     url: "/dashboard/overview",
+    //     icon: LayoutGrid,
+    // },
     {
         title: "Invoices",
         url: "/dashboard/invoices",

@@ -34,15 +34,17 @@ import {
     useFieldArray,
     useWatch,
 } from "react-hook-form"
-import { useNewInvoice } from "../hooks/useNewInvoice"
+import { useEditInvoice } from "../hooks/useEditInvoice"
 import { useClients } from "@/features/clients/hooks/useClients"
 import { getErrorMessage } from "@/utils"
+import { Invoice } from "../types"
 
 interface NewInvoiceProps {
     closeDialog: () => void
+    invoice: Invoice | null
 }
 
-export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
+export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
     const {
         handleSubmit,
         reset,
@@ -51,17 +53,6 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
         setValue,
     } = useForm<InvoiceFormInputs>({
         resolver: zodResolver(invoiceFormSchema),
-        defaultValues: {
-            items: [{ name: "", description: "", quantity: 1, price: 0, totalPrice: 0 }],
-            tax: 0,
-            discount: 0,
-            paidAmount: 0,
-            totalAmount: 0,
-            dueAmount: 0,
-            issueDate: new Date().toISOString().split("T")[0],
-            invoiceNumber: `INV-${Math.floor(1000 + Math.random() * 9000)}`,
-            status: "PENDING",
-        },
     })
 
     const { fields, append, remove } = useFieldArray({
@@ -85,11 +76,49 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
         setValue("dueAmount", dueAmount)
     }, [items, tax, discount, paidAmount, setValue])
 
+    useEffect(() => {
+        reset({
+            items:
+                invoice?.items && invoice.items.length
+                    ? invoice.items.map((item) => ({
+                        name: item.name || "",
+                        description: item.description || undefined, // convert null to undefined
+                        quantity: item.quantity || 1,
+                        price: item.price || 0,
+                        totalPrice: item.totalPrice || 0,
+                    }))
+                    : [
+                        {
+                            name: "",
+                            description: "",
+                            quantity: 1,
+                            price: 0,
+                            totalPrice: 0,
+                        },
+                    ],
+            tax: invoice?.tax || 0,
+            discount: invoice?.discount || 0,
+            paidAmount: invoice?.paidAmount || 0,
+            totalAmount: invoice?.totalAmount || 0,
+            dueAmount: invoice?.dueAmount || 0,
+            issueDate: invoice?.issueDate
+                ? new Date(invoice.issueDate).toISOString().split("T")[0]
+                : "",
+            dueDate: invoice?.dueDate
+                ? new Date(invoice.dueDate).toISOString().split("T")[0]
+                : "",
+            invoiceNumber: invoice?.invoiceNumber || "",
+            status: invoice?.status || "PENDING",
+            clientId: invoice?.clientId || "",
+        });
+    }, [invoice, reset]);
+
+
     const { data: clients } = useClients()
 
-    const { mutate, isPending } = useNewInvoice({
+    const { mutate, isPending } = useEditInvoice({
         onSuccess: () => {
-            toast.success("Invoice created successfully")
+            toast.success("Invoice updated successfully")
             reset()
             closeDialog()
         },
@@ -112,13 +141,13 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
             totalAmount,
             dueAmount,
         }
-        mutate(payload)
+        mutate({ id: invoice?.id || "", data: payload })
     }
 
     return (
         <DialogContent className="sm:max-w-[850px] max-h-[95vh] overflow-y-auto">
             <DialogHeader>
-                <DialogTitle>Create Invoice</DialogTitle>
+                <DialogTitle>Edit Invoice</DialogTitle>
             </DialogHeader>
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -298,7 +327,7 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
                     </DialogClose>
                     <Button type="submit" disabled={isPending}>
                         {isPending && <Spinner />}
-                        <span>Save</span>
+                        <span>Save Changes</span>
                     </Button>
                 </DialogFooter>
             </form>
