@@ -89,7 +89,7 @@ export default function InvoicesPageContent() {
     return (
         <div className="flex flex-col gap-6 px-4 py-8 lg:p-8">
             <div className="flex items-center justify-between gap-2">
-                <Input placeholder="Search clients" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="lg:w-[40%]" />
+                <Input placeholder="Search invoices" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="lg:w-[40%]" />
                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                     <DialogTrigger asChild>
                         <Button>New Invoice</Button>
