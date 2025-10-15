@@ -153,7 +153,7 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 {/* Invoice details */}
                 <FieldSet>
-                    <FieldGroup className="!grid !grid-cols-3 gap-4">
+                    <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-2 md:gap-4">
                         <Field>
                             <FieldLabel>Invoice Number</FieldLabel>
                             <Input {...register("invoiceNumber")} readOnly />
@@ -170,7 +170,7 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
                 </FieldSet>
 
                 <FieldSet>
-                    <FieldGroup className="!grid !grid-cols-3 gap-4">
+                    <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-2 md:gap-4">
                         <Field>
                             <FieldLabel>Client</FieldLabel>
                             <Controller
@@ -223,7 +223,7 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
                         {fields.map((field, index) => (
                             <div
                                 key={field.id}
-                                className="grid grid-cols-5 gap-3 border p-3 rounded-md bg-muted/30"
+                                className="grid grid-cols-2 md:grid-cols-5 gap-3 border p-3 rounded-md bg-muted/30"
                             >
                                 <Controller
                                     name={`items.${index}.name`}

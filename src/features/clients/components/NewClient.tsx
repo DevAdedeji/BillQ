@@ -56,7 +56,7 @@ export default function NewClient({ closeDialog }: NewClientProps) {
                 <FieldSet>
                     <FieldGroup>
                         <Field>
-                            <FieldLabel htmlFor="name">Company?Brand Name</FieldLabel>
+                            <FieldLabel htmlFor="name">Company/Brand Name</FieldLabel>
                             <Input id="name" type="text" placeholder="John Doe" {...register("name")} />
                             {errors.name && <p className="text-error text-xs">{errors.name.message}</p>}
                         </Field>
