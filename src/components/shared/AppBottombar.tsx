@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation"
 export default function AppBottomBar() {
     const pathname = usePathname()
     return (
-        <footer className="flex bg-white mt-5 md:hidden fixed right-0 left-0 bottom-0 w-full min-h-16 py-3 items-center justify-between px-4 lg:px-8 border-t border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
+        <footer className="flex bg-white md:hidden fixed right-0 left-0 bottom-0 w-full min-h-16 py-3 items-center justify-between px-4 lg:px-8 border-t border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
             <div className="w-full flex items-center justify-between">
                 {
                     dashboardLinks.map((link) => {
