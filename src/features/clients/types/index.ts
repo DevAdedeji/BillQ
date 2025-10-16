@@ -1,3 +1,5 @@
+import { Invoice } from "@/features/invoice/types";
+
 export interface Client {
     id: string;
     name: string;
@@ -6,4 +8,5 @@ export interface Client {
     userId: string;
     createdAt: string;
     updatedAt: string;
+    invoices?: Invoice[]
 }

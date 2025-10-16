@@ -289,6 +289,10 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
                             <CurrencyInput type="number" placeholder="0" {...register("discount", { valueAsNumber: true })} />
                         </Field>
                         <Field>
+                            <FieldLabel>Paid Amount</FieldLabel>
+                            <CurrencyInput type="number" placeholder="0" {...register("paidAmount", { valueAsNumber: true })} />
+                        </Field>
+                        <Field>
                             <FieldLabel>Total</FieldLabel>
                             <CurrencyInput {...register("totalAmount", { valueAsNumber: true })} readOnly />
                         </Field>

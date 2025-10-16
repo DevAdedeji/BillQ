@@ -98,7 +98,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
                     <div className="space-y-3">
                         {
                             invoice.items.map((item) => (
-                                <div className="w-full bg-blue-100 p-2 rounded-lg flex flex-col gap-2 text-sm" key={item.id}>
+                                <div className="w-full bg-muted/30 p-2 rounded-lg flex flex-col gap-2 text-sm" key={item.id}>
                                     <p>
                                         <span className="font-semibold mr-1">
                                             Name:

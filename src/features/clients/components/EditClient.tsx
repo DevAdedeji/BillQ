@@ -21,7 +21,7 @@ import { useEditClient } from "../hooks/useEditClient"
 import { getErrorMessage } from "@/utils"
 import { toast } from "sonner"
 import { Spinner } from "@/components/ui/spinner"
-import { Client } from "../hooks/useClients"
+import { Client } from "../types"
 import { useEffect } from "react"
 
 interface EditClientProps {
