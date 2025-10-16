@@ -236,7 +236,7 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
                         {fields.map((field, index) => (
                             <div
                                 key={field.id}
-                                className="grid grid-cols-2 gap-3 border p-3 rounded-md bg-muted/30"
+                                className="grid grid-cols-1 md:grid-cols-2 gap-3 border p-3 rounded-md bg-muted/30"
                             >
                                 <Controller
                                     name={`items.${index}.name`}
@@ -319,7 +319,7 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
 
                 {/* Totals */}
                 <FieldSet>
-                    <FieldGroup className="!grid !grid-cols-3 gap-4">
+                    <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-4">
                         <Field>
                             <FieldLabel>Tax</FieldLabel>
                             <CurrencyInput type="number" placeholder="0" {...register("tax", { valueAsNumber: true })} />

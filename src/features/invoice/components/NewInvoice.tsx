@@ -196,7 +196,7 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
                         {fields.map((field, index) => (
                             <div
                                 key={field.id}
-                                className="grid grid-cols-2 gap-3 border p-3 rounded-md bg-muted/30"
+                                className="grid grid-cols-1 md:grid-cols-2 gap-3 border p-3 rounded-md bg-muted/30"
                             >
                                 <Controller
                                     name={`items.${index}.name`}
