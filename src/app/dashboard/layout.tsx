@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <AppSidebar />
             <main className="w-full relative">
                 <AppTopbar />
-                <div className="mb-16">
+                <div className="mb-20">
                   {children}
                 </div>
                 <AppBottomBar />
