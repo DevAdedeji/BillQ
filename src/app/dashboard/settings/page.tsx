@@ -1,3 +1,5 @@
+import SettingsPageContent from "@/features/settings/components/SettingsPageContent"
+
 export const metadata = {
     title: "Settings | BillQ Dashboard",
     description: "Manage and send invoices easily with BillQ.",
@@ -5,6 +7,6 @@ export const metadata = {
 
 export default function SettingsPage() {
     return (
-        <div></div>
+        <SettingsPageContent />
     )
 }

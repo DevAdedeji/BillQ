@@ -38,7 +38,7 @@ import {
 import { useNewInvoice } from "../hooks/useNewInvoice"
 import { useClients } from "@/features/clients/hooks/useClients"
 import { formatCurrency, getErrorMessage } from "@/utils"
-import CurrencyInput from "@/components/shared/CurrencyInput"
+import CurrencyInput from "@/components/ui/currency-input"
 
 interface NewInvoiceProps {
     closeDialog: () => void

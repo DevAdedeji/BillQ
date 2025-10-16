@@ -42,12 +42,40 @@ export const authOptions: NextAuthOptions = {
     session: { strategy: "jwt" },
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-        async jwt({ token, user }) {
-            if (user) token.id = user.id
+        async jwt({ token, user, trigger, session }) {
+            if (user) {
+                token.id = user.id
+                token.name = user.name
+                token.email = user.email
+                token.brandName = user.brandName
+                token.brandEmail = user.brandEmail
+                token.brandAddress = user.brandAddress
+            }
+            if (trigger === "update" && session?.user) {
+                token.brandName = session.user.brandName
+                token.brandEmail = session.user.brandEmail
+                token.brandAddress = session.user.brandAddress
+            }
+            const dbUser = await prisma.user.findUnique({
+                where: { id: token.id as string },
+            })
+
+            if (dbUser) {
+                token.brandName = dbUser.brandName
+                token.brandEmail = dbUser.brandEmail
+                token.brandAddress = dbUser.brandAddress
+            }
             return token
         },
         async session({ session, token }) {
-            if (token) session.user.id = token.id as string
+            if (token) {
+                session.user.id = token.id as string
+                session.user.name = token.name
+                session.user.email = token.email
+                session.user.brandName = (token.brandName ?? null) as string | null
+                session.user.brandEmail = (token.brandEmail ?? null) as string | null
+                session.user.brandAddress = (token.brandAddress ?? null) as string | null
+            }
             return session
         }
     }

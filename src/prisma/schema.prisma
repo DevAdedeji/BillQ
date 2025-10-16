@@ -14,6 +14,9 @@ model User {
     password      String? // Add this
     emailVerified DateTime?
     image         String?
+    brandName     String?
+    brandEmail    String?
+    brandAddress  String?
     accounts      Account[]
     sessions      Session[]
     createdAt     DateTime  @default(now())
