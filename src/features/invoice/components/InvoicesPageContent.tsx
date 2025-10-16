@@ -31,6 +31,7 @@ import StatusBadge from "./StatusBadge"
 import { Invoice } from "../types"
 import EditInvoice from "./EditInvoice"
 import EmptyTableState from "@/components/shared/EmptyTableState"
+import { useRouter } from "next/navigation"
 
 function LoadingSkeleton() {
     return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
@@ -60,6 +61,8 @@ export default function InvoicesPageContent() {
 
     const { data: invoices, isLoading, isError, refetch, isFetching } = useInvoices()
 
+    const router = useRouter()
+
     const isDataLoading = isLoading || (!!invoices && isFetching)
 
     const refreshDetails = () => {
@@ -79,6 +82,10 @@ export default function InvoicesPageContent() {
             setOpenDropdownId(null)
         }
     })
+
+    const goToInvoicePage = (id: string) => {
+        router.push(`/dashboard/invoices/${id}`)
+    }
 
     const filteredInvoices = invoices?.filter((invoice: Invoice) => invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()))
 
@@ -134,7 +141,7 @@ export default function InvoicesPageContent() {
                                         {
                                             filteredInvoices.map((invoice) => {
                                                 return (
-                                                    <TableRow key={invoice.id} className="hover:bg-slate-50">
+                                                    <TableRow key={invoice.id} className="hover:bg-slate-50" onClick={() => goToInvoicePage(invoice.id)}>
                                                         <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
                                                         <TableCell className="font-medium">{formatDate(invoice.dueDate)}</TableCell>
                                                         <TableCell className="font-medium">{invoice.client.name}</TableCell>

@@ -16,6 +16,7 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import {
     Select,
     SelectTrigger,
@@ -36,7 +37,8 @@ import {
 } from "react-hook-form"
 import { useEditInvoice } from "../hooks/useEditInvoice"
 import { useClients } from "@/features/clients/hooks/useClients"
-import { getErrorMessage } from "@/utils"
+import { formatCurrency, getErrorMessage } from "@/utils"
+import CurrencyInput from "@/components/shared/CurrencyInput"
 import { Invoice } from "../types"
 
 interface NewInvoiceProps {
@@ -65,16 +67,27 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
     const tax = useWatch({ control, name: "tax" }) || 0
     const discount = useWatch({ control, name: "discount" }) || 0
     const paidAmount = useWatch({ control, name: "paidAmount" }) || 0
+    const status = useWatch({ control, name: "status" })
 
     // Calculate totals dynamically
     useEffect(() => {
         const subtotal = items.reduce((acc, curr) => acc + (curr.totalPrice || 0), 0)
         const totalAmount = subtotal + Number(tax) - Number(discount)
         const dueAmount = totalAmount - Number(paidAmount)
-
         setValue("totalAmount", totalAmount)
         setValue("dueAmount", dueAmount)
-    }, [items, tax, discount, paidAmount, setValue])
+        if (status === "PAID") {
+            const subtotal = items.reduce((acc, curr) => acc + (curr.totalPrice || 0), 0)
+            const totalAmount = subtotal + Number(tax) - Number(discount)
+            setValue("paidAmount", totalAmount)
+            setValue("dueAmount", 0)
+        } else if (status === "PARTIALLY_PAID") {
+            const subtotal = items.reduce((acc, curr) => acc + (curr.totalPrice || 0), 0)
+            const totalAmount = subtotal + Number(tax) - Number(discount)
+            const paid = Number(paidAmount) || 0
+            setValue("dueAmount", Math.max(totalAmount - paid, 0))
+        }
+    }, [items, tax, discount, paidAmount, setValue, status])
 
     useEffect(() => {
         reset({
@@ -223,20 +236,13 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
                         {fields.map((field, index) => (
                             <div
                                 key={field.id}
-                                className="grid grid-cols-2 md:grid-cols-5 gap-3 border p-3 rounded-md bg-muted/30"
+                                className="grid grid-cols-2 gap-3 border p-3 rounded-md bg-muted/30"
                             >
                                 <Controller
                                     name={`items.${index}.name`}
                                     control={control}
                                     render={({ field }) => (
                                         <Input placeholder="Name" {...field} />
-                                    )}
-                                />
-                                <Controller
-                                    name={`items.${index}.description`}
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Input placeholder="Description" {...field} />
                                     )}
                                 />
                                 <Controller
@@ -260,7 +266,7 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
                                     name={`items.${index}.price`}
                                     control={control}
                                     render={({ field }) => (
-                                        <Input
+                                        <CurrencyInput
                                             type="number"
                                             placeholder="Price"
                                             {...field}
@@ -273,11 +279,21 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
                                         />
                                     )}
                                 />
-                                <div className="flex items-center justify-between">
-                                    <span className="font-medium">
-                                        {(items[index]?.totalPrice || 0).toFixed(2)}
+                                <p className="text-sm h-10 flex items-center">
+                                    Total Price:
+                                    <span className="font-medium ml-1">
+                                        {formatCurrency(Number((items[index]?.totalPrice || 0).toFixed(2)))}
                                     </span>
-                                    {fields.length > 1 && (
+                                </p>
+                                <div className="flex items-center justify-between">
+                                    <Controller
+                                        name={`items.${index}.description`}
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Textarea placeholder="Description" className="max-h-[100px]" {...field} />
+                                        )}
+                                    />
+                                    {fields.length > 0 && (
                                         <Button
                                             type="button"
                                             variant="ghost"
@@ -306,15 +322,15 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
                     <FieldGroup className="!grid !grid-cols-3 gap-4">
                         <Field>
                             <FieldLabel>Tax</FieldLabel>
-                            <Input type="number" placeholder="0" {...register("tax", { valueAsNumber: true })} />
+                            <CurrencyInput type="number" placeholder="0" {...register("tax", { valueAsNumber: true })} />
                         </Field>
                         <Field>
                             <FieldLabel>Discount</FieldLabel>
-                            <Input type="number" placeholder="0" {...register("discount", { valueAsNumber: true })} />
+                            <CurrencyInput type="number" placeholder="0" {...register("discount", { valueAsNumber: true })} />
                         </Field>
                         <Field>
                             <FieldLabel>Total</FieldLabel>
-                            <Input {...register("totalAmount", { valueAsNumber: true })} readOnly />
+                            <CurrencyInput {...register("totalAmount", { valueAsNumber: true })} readOnly />
                         </Field>
                     </FieldGroup>
                 </FieldSet>

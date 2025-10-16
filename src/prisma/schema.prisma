@@ -55,7 +55,7 @@ model Client {
     address   String?
     createdAt DateTime  @default(now())
     updatedAt DateTime  @updatedAt
-    Invoice   Invoice[]
+    invoices  Invoice[]
 
     @@unique([userId, email])
 }

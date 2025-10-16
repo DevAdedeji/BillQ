@@ -29,6 +29,7 @@ import { toast } from "sonner"
 import { Spinner } from "@/components/ui/spinner"
 import EditClient from "./EditClient"
 import EmptyTableState from "@/components/shared/EmptyTableState"
+import { useRouter } from "next/navigation"
 
 function LoadingSkeleton() {
     return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
@@ -60,6 +61,8 @@ export default function ClientsPageContent() {
 
     const { data: clients, isLoading, isError, refetch, isFetching } = useClients()
 
+    const router = useRouter()
+
     const isDataLoading = isLoading || (!!clients && isFetching)
 
     const refreshDetails = () => {
@@ -79,6 +82,10 @@ export default function ClientsPageContent() {
             setOpenDropdownId(null)
         }
     })
+
+    const goToClientPage = (id: string) => {
+        router.push(`/dashboard/clients/${id}`)
+    }
 
     const filteredClients = clients?.filter((client: Client) => client.name.toLowerCase().includes(searchQuery.toLowerCase()) || client.email.toLowerCase().includes(searchQuery.toLowerCase()))
 
@@ -131,7 +138,7 @@ export default function ClientsPageContent() {
                                     <TableBody>
                                         {
                                             filteredClients.map((client) => (
-                                                <TableRow key={client.id}>
+                                                <TableRow key={client.id} onClick={() => goToClientPage(client.id)}>
                                                     <TableCell className="font-medium">{client.name}</TableCell>
                                                     <TableCell>{client.email}</TableCell>
                                                     <TableCell>{client.address}</TableCell>

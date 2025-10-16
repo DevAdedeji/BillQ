@@ -4,9 +4,17 @@ export const getErrorMessage = (e: unknown) => {
 }
 
 export const formatDate = (date: string | Date) => {
-    const d = new Date(date)
-    return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
-}
+    if (!date) return "";
+
+    const d = new Date(date);
+    return new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        timeZone: "UTC",
+    }).format(d);
+};
+
 
 export const formatCurrency = (amount?: number, currency: string = "USD") => {
     const validAmount = typeof amount === "number" ? amount : 0;

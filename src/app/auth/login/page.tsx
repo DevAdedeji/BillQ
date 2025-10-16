@@ -31,7 +31,7 @@ export default function LoginPage() {
     const { mutate, isPending } = useSignIn(
         {
             onSuccess: () => {
-                router.push("/dashboard/overview")
+                router.push("/dashboard/invoices")
             },
             onError: (e: unknown) => {
                 const message = getErrorMessage(e)
@@ -73,7 +73,7 @@ export default function LoginPage() {
                     <Button
                         type="button"
                         variant="outline"
-                        onClick={() => signIn("google", { callbackUrl: "/dashboard/overview" })}
+                        onClick={() => signIn("google", { callbackUrl: "/dashboard/invoices" })}
                         className="w-full flex items-center justify-center gap-2"
                     >
                         <Image src="/google.svg" height={20} width={20} alt="Google logo" /> Continue with Google

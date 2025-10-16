@@ -58,3 +58,35 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
         return NextResponse.json({ error: message || "Failed to delete client" }, { status: 400 });
     }
 }
+
+export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const user = await getCurrentUser();
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const { id } = await params;
+
+        const client = await prisma.client.findUnique({
+            where: { userId: user.id, id },
+            include: {
+                invoices: {
+                    include: {
+                        items: true,
+                        client: true,
+                    },
+                },
+            },
+        })
+
+        if (client) {
+            return NextResponse.json({ data: client }, { status: 200 })
+        } else {
+            NextResponse.json({ error: "Client not found" }, { status: 404 })
+        }
+    } catch (err: unknown) {
+        const message = getErrorMessage(err);
+        return NextResponse.json({ error: message || "Failed to fetch client details" }, { status: 400 });
+    }
+}
