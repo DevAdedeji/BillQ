@@ -38,7 +38,7 @@ import {
 import { useNewInvoice } from "../hooks/useNewInvoice"
 import { useClients } from "@/features/clients/hooks/useClients"
 import { formatCurrency, getErrorMessage } from "@/utils"
-import CurrencyInput from "@/components/shared/CurrencyInput"
+import CurrencyInput from "@/components/ui/currency-input"
 
 interface NewInvoiceProps {
     closeDialog: () => void
@@ -287,6 +287,10 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
                         <Field>
                             <FieldLabel>Discount</FieldLabel>
                             <CurrencyInput type="number" placeholder="0" {...register("discount", { valueAsNumber: true })} />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Paid Amount</FieldLabel>
+                            <CurrencyInput type="number" placeholder="0" {...register("paidAmount", { valueAsNumber: true })} />
                         </Field>
                         <Field>
                             <FieldLabel>Total</FieldLabel>
