@@ -25,3 +25,29 @@ export const formatCurrency = (amount?: number, currency: string = "USD") => {
         minimumFractionDigits: 2,
     }).format(validAmount);
 };
+
+
+export const copyToClipboard = (text: string) => {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                console.log("Copied to clipboard!");
+            })
+            .catch(err => {
+                console.error("Failed to copy: ", err);
+            });
+    } else {
+        // Fallback for older browsers
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            document.execCommand("copy");
+            console.log("Copied to clipboard!");
+        } catch (err) {
+            console.error("Failed to copy: ", err);
+        }
+        document.body.removeChild(textarea);
+    }
+}

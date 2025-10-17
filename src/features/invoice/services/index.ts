@@ -38,6 +38,20 @@ export const createInvoice = async (data: InvoiceFormInputs) => {
     return res.json()
 }
 
+export const createInvoiceWithAi = async (prompt: string) => {
+    const res = await fetch("/api/ai/invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+    })
+
+    if (!res.ok) {
+        const error = await res.json()
+        throw new Error(error.error || error.message || "Unable to create invoice")
+    }
+    return res.json()
+}
+
 export const deleteInvoice = async (id: string) => {
     const res = await fetch(`/api/invoices/${id}`, {
         method: "DELETE",

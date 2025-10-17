@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Skeleton } from "@/components/ui/skeleton"
 import NewInvoice from "./NewInvoice"
-import { EllipsisVertical } from "lucide-react"
+import { EllipsisVertical, Sparkles } from "lucide-react"
 import { useState } from "react"
 import { getErrorMessage, formatDate, formatCurrency } from "@/utils"
 import { toast } from "sonner"
@@ -32,6 +32,7 @@ import { Invoice } from "../types"
 import EditInvoice from "./EditInvoice"
 import EmptyTableState from "@/components/shared/EmptyTableState"
 import { useRouter } from "next/navigation"
+import NewInvoiceWithAI from "./NewInvoiceWithAI"
 
 function LoadingSkeleton() {
     return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
@@ -55,6 +56,7 @@ function LoadingSkeleton() {
 
 export default function InvoicesPageContent() {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [isAIDialogOpen, setIsAIDialogOpen] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
     const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
@@ -72,7 +74,7 @@ export default function InvoicesPageContent() {
 
     const { mutate, isPending } = useDeleteInvoice({
         onSuccess: () => {
-            toast.success("Client deleted successfully")
+            toast.success("Invoice deleted successfully")
             refreshDetails()
             setOpenDropdownId(null)
         },
@@ -97,12 +99,22 @@ export default function InvoicesPageContent() {
         <div className="flex flex-col gap-6 px-4 py-8 lg:p-8">
             <div className="flex items-center justify-between gap-2">
                 <Input placeholder="Search invoices" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="lg:w-[40%]" />
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button>New Invoice</Button>
-                    </DialogTrigger>
-                    <NewInvoice closeDialog={refreshDetails} />
-                </Dialog>
+                <div className="flex items-center gap-2">
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button>New Invoice</Button>
+                        </DialogTrigger>
+                        <NewInvoice />
+                    </Dialog>
+                    <Dialog open={isAIDialogOpen} onOpenChange={setIsAIDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button>
+                                <Sparkles />
+                            </Button>
+                        </DialogTrigger>
+                        <NewInvoiceWithAI />
+                    </Dialog>
+                </div>
             </div>
 
             {
@@ -157,7 +169,7 @@ export default function InvoicesPageContent() {
                                                                     if (!isPending) setOpenDropdownId(isOpen ? invoice.id : null);
                                                                 }}>
                                                                 <DropdownMenuTrigger asChild>
-                                                                    <Button variant="outline">
+                                                                    <Button variant="outline" onClick={(e) => e.stopPropagation()}>
                                                                         <EllipsisVertical />
                                                                     </Button>
                                                                 </DropdownMenuTrigger>

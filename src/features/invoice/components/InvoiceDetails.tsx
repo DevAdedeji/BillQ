@@ -2,8 +2,8 @@
 
 import { useInvoiceDetails } from "@/features/invoice/hooks/useInvoice"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ArrowLeft, Eye } from "lucide-react"
-import { getErrorMessage, formatDate, formatCurrency } from "@/utils"
+import { ArrowLeft, Eye, Share2 } from "lucide-react"
+import { getErrorMessage, formatDate, formatCurrency, copyToClipboard } from "@/utils"
 import Link from "next/link"
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog"
 import StatusBadge from "./StatusBadge"
@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import EditInvoice from "./EditInvoice"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 function LoadingSkeleton() {
     return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
@@ -43,6 +44,13 @@ export default function InvoiceDetails({ id }: { id: string }) {
             router.push(`/dashboard/invoices/${invoice.id}/preview`)
         }
     }
+
+    const copyLink = () => {
+        if (invoice) {
+            copyToClipboard(`https://billq.vercel.app/invoice/${invoice.id}`)
+            toast.success("Copied successfully")
+        }
+    }
     const refreshDetails = () => {
         setIsDialogOpen(false)
         refetch()
@@ -58,6 +66,12 @@ export default function InvoiceDetails({ id }: { id: string }) {
                     <p>Back</p>
                 </Link>
                 <div className="flex items-center gap-4">
+                    <Button variant={"outline"} onClick={() => goToPreviewPage()}>
+                        <Eye />
+                        <span className="hidden sm:block">
+                            Preview
+                        </span>
+                    </Button>
                     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                         <DialogTrigger asChild>
                             <Button>Edit Invoice</Button>
@@ -66,11 +80,9 @@ export default function InvoiceDetails({ id }: { id: string }) {
                             refreshDetails()
                         }} invoice={invoice} />
                     </Dialog>
-                    <Button variant={"outline"} onClick={() => goToPreviewPage()}>
-                        <Eye />
-                        <span className="hidden sm:block">
-                            Preview
-                        </span>
+                    <Button variant={"outline"} onClick={() => copyLink()}>
+                        <Share2 />
+                        <span>Copy</span>
                     </Button>
                 </div>
             </div>
