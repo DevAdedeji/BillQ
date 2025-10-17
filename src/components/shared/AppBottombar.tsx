@@ -3,6 +3,9 @@
 import Link from "next/link"
 import { dashboardLinks } from "@/constants/dashboard"
 import { usePathname } from "next/navigation"
+import { LogOut } from "lucide-react"
+import { signOut } from "next-auth/react"
+
 export default function AppBottomBar() {
     const pathname = usePathname()
     return (
@@ -21,6 +24,12 @@ export default function AppBottomBar() {
                         )
                     })
                 }
+                <button className="h-full flex flex-col justify-between items-center gap-1 text-red-500 text-xs" onClick={() => signOut({ callbackUrl: "/login" })}>
+                    <div className="border border-gray-300 bg-red-100 rounded-lg size-8 flex items-center justify-center">
+                        <LogOut size={16} />
+                    </div>
+                    <p>Log out</p>
+                </button>
             </div>
         </footer>
     )

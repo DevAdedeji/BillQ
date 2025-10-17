@@ -8,6 +8,7 @@ import {
     FieldSet,
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Spinner } from "@/components/ui/spinner"
 import { useForm } from "react-hook-form"
@@ -75,6 +76,16 @@ export default function Account() {
                         <Field>
                             <FieldLabel>Company/Brand Address</FieldLabel>
                             <Input {...register("brandAddress")} />
+                        </Field>
+                    </FieldGroup>
+                    <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <Field>
+                            <FieldLabel>Note</FieldLabel>
+                            <Textarea className="max-h-[200px]" {...register("note")} />
+                        </Field>
+                        <Field>
+                            <FieldLabel>Terms</FieldLabel>
+                            <Textarea className="max-h-[200px]" {...register("terms")} />
                         </Field>
                     </FieldGroup>
                 </FieldSet>

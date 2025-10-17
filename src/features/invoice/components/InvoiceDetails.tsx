@@ -2,7 +2,7 @@
 
 import { useInvoiceDetails } from "@/features/invoice/hooks/useInvoice"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Eye } from "lucide-react"
 import { getErrorMessage, formatDate, formatCurrency } from "@/utils"
 import Link from "next/link"
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog"
@@ -10,6 +10,7 @@ import StatusBadge from "./StatusBadge"
 import { Button } from "@/components/ui/button"
 import EditInvoice from "./EditInvoice"
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 function LoadingSkeleton() {
     return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
@@ -36,6 +37,12 @@ export default function InvoiceDetails({ id }: { id: string }) {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const { data: invoice, isPending, refetch } = useInvoiceDetails(id)
 
+    const router = useRouter()
+    const goToPreviewPage = () => {
+        if (invoice) {
+            router.push(`/dashboard/invoices/${invoice.id}/preview`)
+        }
+    }
     const refreshDetails = () => {
         setIsDialogOpen(false)
         refetch()
@@ -50,14 +57,22 @@ export default function InvoiceDetails({ id }: { id: string }) {
                     <ArrowLeft />
                     <p>Back</p>
                 </Link>
-                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                        <Button>Edit Invoice</Button>
-                    </DialogTrigger>
-                    <EditInvoice closeDialog={() => {
-                        refreshDetails()
-                    }} invoice={invoice} />
-                </Dialog>
+                <div className="flex items-center gap-4">
+                    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                        <DialogTrigger asChild>
+                            <Button>Edit Invoice</Button>
+                        </DialogTrigger>
+                        <EditInvoice closeDialog={() => {
+                            refreshDetails()
+                        }} invoice={invoice} />
+                    </Dialog>
+                    <Button variant={"outline"} onClick={() => goToPreviewPage()}>
+                        <Eye />
+                        <span className="hidden sm:block">
+                            Preview
+                        </span>
+                    </Button>
+                </div>
             </div>
             <div className="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="flex flex-col gap-1">

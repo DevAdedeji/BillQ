@@ -13,9 +13,10 @@ import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { User2 } from "lucide-react"
+import { LogOut, User2 } from "lucide-react"
 import { dashboardLinks } from "@/constants/dashboard"
 import { useCurrentUser } from "@/lib/session"
+import { signOut } from "next-auth/react"
 
 export function AppSidebar() {
     const pathname = usePathname()
@@ -36,7 +37,7 @@ export function AppSidebar() {
                         const isActive = pathname.startsWith(link.url)
                         return (
                             <SidebarMenuItem key={link.title}>
-                                <SidebarMenuButton asChild className={`hover:bg-blue-100 hover:text-primary ${isActive ? 'bg-blue-100 text-primary font-bold' : ''}`}>
+                                <SidebarMenuButton asChild className={`hover:bg-blue-100 h-10 hover:text-primary ${isActive ? 'bg-blue-100 text-primary font-bold' : ''}`}>
                                     <Link href={link.url} className="flex items-center gap-2">
                                         <link.icon />
                                         <span>{link.title}</span>
@@ -45,6 +46,14 @@ export function AppSidebar() {
                             </SidebarMenuItem>
                         )
                     })}
+                    <SidebarMenuItem>
+                        <SidebarMenuButton asChild onClick={() => signOut({ callbackUrl: "/login" })}>
+                            <div className="h-10 flex items-center gap-2 text-red-500">
+                                <LogOut />
+                                <span>Log out</span>
+                            </div>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarContent>
 

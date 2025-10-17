@@ -6,6 +6,8 @@ export const userSchema = z.object({
     brandName: z.string().optional(),
     brandEmail: z.string().email("Invalid Email").optional(),
     brandAddress: z.string().optional(),
+    note: z.string().optional(),
+    terms: z.string().optional(),
 })
 
 
