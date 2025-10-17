@@ -13,10 +13,13 @@ export default function Features() {
                                 <path d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899l4-4a4 4 0 000-5.656l-1.1-1.1a4 4 0 00-5.658 5.656l4 4" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
                             </svg>
                         </div>
-                        <h3 className="mt-6 text-xl font-semibold text-content-light dark:text-content-dark">Smart PayLink</h3>
+                        <h3 className="mt-6 text-xl font-semibold text-content-light dark:text-content-dark">
+                            Smart Payment Flow
+                        </h3>
                         <p className="mt-2 text-base text-muted-light dark:text-muted-dark">
-                            Generate a unique payment link for each invoice and share it with your clients. Get paid directly through Paystack or Stripe.
+                            Clients can pay directly from the public invoice page using Stripe. Once payment succeeds, the invoice updates automatically.
                         </p>
+
                     </div>
                     <div className="flex flex-col items-center text-center">
                         <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -32,12 +35,15 @@ export default function Features() {
                     <div className="flex flex-col items-center text-center">
                         <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-primary/10 text-primary">
                             <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path>
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m2 4v1m-6 4h12a2 2 0 002-2V7a2 2 0 00-2-2h-3.5l-1-1h-3l-1 1H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
                         </div>
-                        <h3 className="mt-6 text-xl font-semibold text-content-light dark:text-content-dark">Smart Reminders</h3>
-                        <p className="mt-2 text-base text-muted-light dark:text-muted-dark">Set up automated payment reminders to ensure you get paid on time. Never miss a payment again.</p>
+                        <h3 className="mt-6 text-xl font-semibold text-content-light dark:text-content-dark">Real-Time Tracking</h3>
+                        <p className="mt-2 text-base text-muted-light dark:text-muted-dark">
+                            See when clients view or pay your invoices, with live status updates and analytics.
+                        </p>
                     </div>
+
                 </div>
             </div>
         </section>

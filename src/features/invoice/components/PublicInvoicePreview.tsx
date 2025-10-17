@@ -4,12 +4,24 @@ import { printPDF } from "@/utils/printPDF"
 import { Button } from "@/components/ui/button"
 import { formatCurrency } from "@/utils"
 import { Invoice } from "../types"
+import { useSearchParams } from "next/navigation"
+import { FormEvent, useEffect, useState } from "react"
+import { toast } from "sonner"
+import { usePayInvoice, useVerifyPayment } from "../hooks/useInvoice"
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader } from "@/components/ui/dialog"
+import CurrencyInput from "@/components/ui/currency-input"
+import { Spinner } from "@/components/ui/spinner"
+import { useRouter } from "next/navigation"
 
 interface PreviewProps {
     invoice: Invoice
 }
 
 export default function PublicInvoicePreview({ invoice }: PreviewProps) {
+    const [amount, setAmount] = useState(0);
+
+    const router = useRouter()
+
     const handleDownloadPDF = async () => {
         printPDF("print-area")
     }
@@ -17,13 +29,70 @@ export default function PublicInvoicePreview({ invoice }: PreviewProps) {
     const user = invoice.user
     const client = invoice.client
 
+    const searchParams = useSearchParams()
+    const sessionId = searchParams.get("session_id")
+    const canceled = searchParams.get("canceled")
+
+    const { data, refetch, isError } = useVerifyPayment(sessionId || "")
+    const { mutate, isPending } = usePayInvoice()
+
+    useEffect(() => {
+        if (!sessionId) return
+        refetch()
+    }, [sessionId, refetch])
+
+    useEffect(() => {
+        if (data?.success) {
+            toast.success("Payment verified and invoice updated! 🎉")
+            router.replace(window.location.pathname)
+        } else if (isError) {
+            toast.error("Failed to verify payment.")
+        }
+    }, [data, isError, router])
+
+    useEffect(() => {
+        if (canceled) {
+            toast.error("Failed to verify payment.")
+        }
+    }, [canceled])
+
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault()
+        if (invoice) {
+            mutate({ id: invoice.id, amount })
+        }
+    }
+
     const formatDate = (date: string | Date) => {
         const d = new Date(date)
         return d.toISOString().split("T")[0]
     }
     return (
         <div className="min-h-screen bg-gray-50 py-12 px-4 flex flex-col gap-4 items-center justify-center">
-            <Button onClick={() => handleDownloadPDF()}>Download PDF</Button>
+            <div className="flex items-center justify-between gap-4">
+                <Button onClick={() => handleDownloadPDF()}>Download PDF</Button>
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button className="!bg-green-500">Pay Now</Button>
+                    </DialogTrigger>
+                    <DialogContent className="lg:max-w-[300px]">
+                        <DialogHeader>
+                            <DialogTitle>Pay Now</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={(e) => handleSubmit(e)} className="space-y-4">
+                            <CurrencyInput type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} required />
+                            <Button type="submit" disabled={isPending} className="w-full">
+                                {
+                                    isPending && <Spinner />
+                                }
+                                <span>
+                                    Continue
+                                </span>
+                            </Button>
+                        </form>
+                    </DialogContent>
+                </Dialog>
+            </div>
             <div className="flex items-center justify-center min-w-[700px] xl:w-[80%] mx-auto">
                 <div id="print-area" className="w-full bg-white shadow-2xl border border-slate-200 p-6">
                     <div className="flex items-center justify-between">
@@ -34,7 +103,7 @@ export default function PublicInvoicePreview({ invoice }: PreviewProps) {
                         <p><span className="font-bold">Invoice#: </span>{invoice.invoiceNumber}</p>
                         <p><span className="font-bold">Invoice Date: </span>{formatDate(invoice.issueDate)}</p>
                         <p><span className="font-bold">Due Date: </span>{formatDate(invoice.dueDate)}</p>
-                        <p className="capitalize"><span className="font-bold">Payment Status: </span>{invoice.status}</p>
+                        <p className="capitalize"><span className="font-bold">Payment Status: </span>{invoice.status.replace("_", " ").toLowerCase()}</p>
                     </div>
                     <div className="mt-10 grid grid-cols-2 bg-muted/50 rounded-md p-4">
                         <div className="flex flex-col gap-1">

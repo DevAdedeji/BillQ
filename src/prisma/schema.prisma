@@ -113,12 +113,12 @@ model InvoiceItem {
 }
 
 model Payment {
-    id        String   @id @default(auto()) @map("_id") @db.ObjectId
-    invoiceId String   @db.ObjectId
-    invoice   Invoice  @relation(fields: [invoiceId], references: [id])
-    amount    Float
-    method    String
-    reference String?
-    status    String
-    createdAt DateTime @default(now())
+    id              String   @id @default(auto()) @map("_id") @db.ObjectId
+    invoiceId       String
+    invoice         Invoice  @relation(fields: [invoiceId], references: [id])
+    stripeSessionId String?
+    amount          Int
+    status          String
+    metadata        Json?
+    createdAt       DateTime @default(now())
 }

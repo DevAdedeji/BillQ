@@ -1,5 +1,6 @@
 import { Invoice } from "../types"
 import { InvoiceFormInputs } from "../schemas";
+import { toast } from "sonner"
 
 export const fetchInvoices = async (): Promise<Invoice[]> => {
     const res = await fetch("/api/invoices", { cache: "no-store" })
@@ -76,4 +77,28 @@ export const editInvoice = async ({ id, data }: { id: string; data: Partial<Invo
     }
 
     return res.json();
+}
+
+export const handlePay = async (invoiceId: string, amount: number) => {
+    const res = await fetch("/api/pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ invoiceId, amount }),
+    })
+
+    const data = await res.json()
+    return data
+}
+
+export const verifyPayment = async (sessionId: string) => {
+    const res = await fetch(`/api/pay/verify?session_id=${sessionId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+    })
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || "Failed to verify payment");
+    }
+    const data = await res.json()
+    return data
 }

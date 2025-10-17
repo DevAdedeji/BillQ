@@ -46,14 +46,6 @@ export function AppSidebar() {
                             </SidebarMenuItem>
                         )
                     })}
-                    <SidebarMenuItem>
-                        <SidebarMenuButton asChild onClick={() => signOut({ callbackUrl: "/auth/login" })}>
-                            <div className="h-10 flex items-center gap-2 text-red-500">
-                                <LogOut />
-                                <span>Log out</span>
-                            </div>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarContent>
 
@@ -64,17 +56,20 @@ export function AppSidebar() {
                 }
                 {
                     user && !isLoading &&
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-between gap-2">
                         {
                             user.image?.length ?
                                 <Image src={user.image} alt={user.name + "profile picture"} height={40} width={40} className="rounded-full" />
                                 :
                                 <User2 />
                         }
-                        <div className="w-[70%] text-sm flex flex-col gap-2">
+                        <div className="w-[60%] text-sm flex flex-col gap-2">
                             <p className="w-full truncate">{user.name}</p>
                             <p className="w-full truncate">{user.email}</p>
                         </div>
+                        <button className="text-red-500" onClick={() => signOut({ callbackUrl: "/auth/login" })}>
+                            <LogOut />
+                        </button>
                     </div>
                 }
             </SidebarFooter>
