@@ -6,7 +6,7 @@ export interface Client {
     email: string;
     address?: string | null;
     userId: string;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: string | Date;
+    updatedAt: string | Date;
     invoices?: Invoice[]
 }

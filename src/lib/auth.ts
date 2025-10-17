@@ -50,11 +50,17 @@ export const authOptions: NextAuthOptions = {
                 token.brandName = user.brandName
                 token.brandEmail = user.brandEmail
                 token.brandAddress = user.brandAddress
+                token.note = user.note
+                token.terms = user.terms
+                token.selectedTemplateId = user.selectedTemplateId
             }
             if (trigger === "update" && session?.user) {
                 token.brandName = session.user.brandName
                 token.brandEmail = session.user.brandEmail
                 token.brandAddress = session.user.brandAddress
+                token.note = session.user.note
+                token.terms = session.user.terms
+                token.selectedTemplateId = session.user.selectedTemplateId
             }
             const dbUser = await prisma.user.findUnique({
                 where: { id: token.id as string },
@@ -64,6 +70,9 @@ export const authOptions: NextAuthOptions = {
                 token.brandName = dbUser.brandName
                 token.brandEmail = dbUser.brandEmail
                 token.brandAddress = dbUser.brandAddress
+                token.note = dbUser.note
+                token.terms = dbUser.terms
+                token.selectedTemplateId = dbUser.selectedTemplateId
             }
             return token
         },
@@ -75,6 +84,9 @@ export const authOptions: NextAuthOptions = {
                 session.user.brandName = (token.brandName ?? null) as string | null
                 session.user.brandEmail = (token.brandEmail ?? null) as string | null
                 session.user.brandAddress = (token.brandAddress ?? null) as string | null
+                session.user.terms = (token.terms ?? null) as string | null
+                session.user.note = (token.note ?? null) as string | null
+                session.user.selectedTemplateId = (token.selectedTemplateId ?? null) as string | null
             }
             return session
         }

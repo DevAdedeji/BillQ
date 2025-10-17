@@ -1,4 +1,5 @@
 import { Client } from "@/features/clients/types"
+import { User } from "next-auth"
 
 export interface InvoiceItem {
     id: string
@@ -29,4 +30,5 @@ export interface Invoice {
     updatedAt: string | Date
     issueDate: string | Date
     invoiceNumber: string
+    user: User
 }

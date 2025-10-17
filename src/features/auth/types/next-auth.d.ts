@@ -11,6 +11,9 @@ declare module "next-auth" {
             brandName?: string | null
             brandEmail?: string | null
             brandAddress?: string | null
+            note?: string | null
+            terms?: string | null
+            selectedTemplateId?: string | null
         }
     }
 
@@ -23,6 +26,9 @@ declare module "next-auth" {
         brandName?: string | null
         brandEmail?: string | null
         brandAddress?: string | null
+        note?: string | null
+        terms?: string | null
+        selectedTemplateId?: string | null
     }
 }
 
