@@ -9,10 +9,6 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                     <h2 className="text-2xl font-bold text-content-light dark:text-content-dark">BillQ</h2>
                 </Link>
                 <div className="bg-card border border-border p-8 shadow-soft rounded-xl space-y-10">
-                    <div className="flex flex-col items-center justify-center text-accent-foreground gap-2">
-                        <h1 className="text-2xl font-bold text-foreground-light dark:text-foreground-dark">Welcome Back</h1>
-                        <p className="text-subtle-light dark:text-subtle-dark">Log in to manage your invoices.</p>
-                    </div>
                     {children}
                 </div>
 
