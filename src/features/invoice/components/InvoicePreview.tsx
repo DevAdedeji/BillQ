@@ -59,7 +59,7 @@ export default function InvoicePreview({ id }: { id: string }) {
                     <Button onClick={() => handleDownloadPDF()}>Download PDF</Button>
                     <Button variant={"outline"} onClick={() => copyLink()}>
                         <Share2 />
-                        <span class="hidden md:block">Copy</span>
+                        <span className="hidden md:block">Copy</span>
                     </Button>
                 </div>
             </div>
