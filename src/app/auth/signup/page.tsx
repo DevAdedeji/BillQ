@@ -58,7 +58,7 @@ export default function SignUpPage() {
                         </Field>
                         <Field>
                             <FieldLabel htmlFor="email">Email address</FieldLabel>
-                            <PasswordInput id="email" type="email" placeholder="example@gmail.com" {...register("email")} />
+                            <Input id="email" type="email" placeholder="example@gmail.com" {...register("email")} />
                             {errors.email && <p className="text-error text-xs">{errors.email.message}</p>}
                         </Field>
                         <Field>
@@ -68,7 +68,7 @@ export default function SignUpPage() {
                         </Field>
                         <Field>
                             <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
-                            <Input id="confirmPassword" type="password" placeholder="Enter password again" {...register("confirmPassword")} />
+                            <PasswordInput id="confirmPassword" type="password" placeholder="Enter password again" {...register("confirmPassword")} />
                             {errors.confirmPassword && <p className="text-error text-xs">{errors.confirmPassword.message}</p>}
                         </Field>
                     </FieldGroup>
