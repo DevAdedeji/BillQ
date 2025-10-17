@@ -1,5 +1,8 @@
 import Stripe from "stripe"
 import { NextResponse } from "next/server"
+import { getErrorMessage } from "@/utils"
+import { getCurrentUser } from "@/lib/session"
+import { prisma } from "@/lib/prisma"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -29,5 +32,32 @@ export async function POST(req: Request) {
     } catch (error) {
         console.error(error)
         return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
+    }
+}
+
+
+export async function GET() {
+    try {
+        const user = await getCurrentUser()
+        if (!user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        }
+
+        const payments = await prisma.payment.findMany({
+            where: { userId: user.id },
+            include: {
+                invoice: {
+                    include: {
+                        client: true,
+                    }
+                },
+            }
+        })
+
+        return NextResponse.json({ data: payments }, { status: 200 })
+
+    } catch (err: unknown) {
+        const message = getErrorMessage(err)
+        return NextResponse.json({ error: message || "Failed to fetch payments" }, { status: 400 })
     }
 }

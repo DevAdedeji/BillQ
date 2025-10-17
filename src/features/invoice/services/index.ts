@@ -1,6 +1,5 @@
 import { Invoice } from "../types"
 import { InvoiceFormInputs } from "../schemas";
-import { toast } from "sonner"
 
 export const fetchInvoices = async (): Promise<Invoice[]> => {
     const res = await fetch("/api/invoices", { cache: "no-store" })

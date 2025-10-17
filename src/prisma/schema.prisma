@@ -25,6 +25,7 @@ model User {
     sessions           Session[]
     createdAt          DateTime  @default(now())
     updatedAt          DateTime  @updatedAt
+    Payment            Payment[]
 }
 
 model Account {
@@ -114,7 +115,9 @@ model InvoiceItem {
 
 model Payment {
     id              String   @id @default(auto()) @map("_id") @db.ObjectId
-    invoiceId       String
+    userId          String
+    user            User     @relation(fields: [userId], references: [id])
+    invoiceId       String   @unique
     invoice         Invoice  @relation(fields: [invoiceId], references: [id])
     stripeSessionId String?
     amount          Int

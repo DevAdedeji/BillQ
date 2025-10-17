@@ -1,4 +1,4 @@
-import { Settings, Users, ScrollText } from "lucide-react"
+import { Settings, Users, ScrollText, CircleDollarSign } from "lucide-react"
 
 export const dashboardLinks = [
     // {
@@ -15,6 +15,11 @@ export const dashboardLinks = [
         title: "Clients",
         url: "/dashboard/clients",
         icon: Users,
+    },
+    {
+        title: "Payments",
+        url: "/dashboard/payments",
+        icon: CircleDollarSign
     },
     {
         title: "Settings",

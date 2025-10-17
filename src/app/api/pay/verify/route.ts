@@ -20,7 +20,9 @@ export async function GET(req: Request) {
         const amountPaid = (session.amount_total ?? 0) / 100
 
         if (session.payment_status === "paid" && invoiceId) {
-            const invoice = await prisma.invoice.findUnique({ where: { id: invoiceId } })
+            const invoice = await prisma.invoice.findUnique({
+                where: { id: invoiceId },
+            })
             if (!invoice) throw new Error("Invoice not found")
 
             const newPaid = (invoice.paidAmount ?? 0) + amountPaid
@@ -36,14 +38,31 @@ export async function GET(req: Request) {
                 },
             })
 
-            await prisma.payment.create({
-                data: {
-                    invoiceId,
-                    amount: amountPaid,
-                    stripeSessionId: session.id,
-                    status: session.payment_status,
-                },
+            const payment = await prisma.payment.findUnique({
+                where: { invoiceId }
             })
+
+            if (payment) {
+                await prisma.payment.update({
+                    where: { invoiceId },
+                    data: {
+                        amount: payment.amount + amountPaid,
+                        stripeSessionId: session.id,
+                        status: session.payment_status,
+                        createdAt: new Date(),
+                    },
+                })
+            } else {
+                await prisma.payment.create({
+                    data: {
+                        invoiceId,
+                        amount: amountPaid,
+                        stripeSessionId: session.id,
+                        status: session.payment_status,
+                        userId: invoice.userId,
+                    },
+                })
+            }
 
             return NextResponse.json({ success: true })
         }
