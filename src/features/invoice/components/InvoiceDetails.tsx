@@ -47,7 +47,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
 
     const copyLink = () => {
         if (invoice) {
-            copyToClipboard(`https://billq.vercel.app/invoice/${invoice.id}`)
+            copyToClipboard(`${process.env.NEXT_PUBLIC_APP_URL}/invoice/${invoice.id}`)
             toast.success("Copied successfully")
         }
     }
