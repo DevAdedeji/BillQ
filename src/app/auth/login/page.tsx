@@ -46,6 +46,10 @@ export default function LoginPage() {
 
     return (
         <div>
+            <div className="flex flex-col items-center justify-center text-accent-foreground gap-2">
+                <h1 className="text-2xl font-bold text-foreground-light dark:text-foreground-dark">Welcome Back</h1>
+                <p className="text-subtle-light dark:text-subtle-dark">Log in to manage your invoices.</p>
+            </div>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                 <FieldSet>
                     <FieldGroup>
