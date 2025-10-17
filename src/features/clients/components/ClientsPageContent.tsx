@@ -149,7 +149,7 @@ export default function ClientsPageContent() {
                                                                 if (!isPending) setOpenDropdownId(isOpen ? client.id : null);
                                                             }}>
                                                             <DropdownMenuTrigger asChild>
-                                                                <Button variant="outline">
+                                                                <Button variant="outline" onClick={(e) => e.stopPropagation()}>
                                                                     <EllipsisVertical />
                                                                 </Button>
                                                             </DropdownMenuTrigger>

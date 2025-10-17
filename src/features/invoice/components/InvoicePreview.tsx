@@ -2,12 +2,14 @@
 
 import { useInvoiceDetails } from "@/features/invoice/hooks/useInvoice"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ArrowLeft } from "lucide-react"
-import { getErrorMessage, formatDate, formatCurrency } from "@/utils"
+import { ArrowLeft, Share2 } from "lucide-react"
+import { getErrorMessage, formatDate, formatCurrency, copyToClipboard } from "@/utils"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useCurrentUser } from "@/lib/session"
 import { printPDF } from "@/utils/printPDF"
+import { toast } from "sonner"
+
 
 function LoadingSkeleton() {
     return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
@@ -37,6 +39,13 @@ export default function InvoicePreview({ id }: { id: string }) {
         printPDF("print-area")
     }
 
+    const copyLink = () => {
+        if (invoice) {
+            copyToClipboard(`https://billq.vercel.app/invoice/${invoice.id}`)
+            toast.success("Copied successfully")
+        }
+    }
+
     if (isPending || isLoading) return <LoadingSkeleton />
 
     if (invoice && user) return (
@@ -46,7 +55,13 @@ export default function InvoicePreview({ id }: { id: string }) {
                     <ArrowLeft />
                     <p>Back</p>
                 </Link>
-                <Button onClick={() => handleDownloadPDF()}>Download PDF</Button>
+                <div className="flex items-center gap-2">
+                    <Button onClick={() => handleDownloadPDF()}>Download PDF</Button>
+                    <Button variant={"outline"} onClick={() => copyLink()}>
+                        <Share2 />
+                        <span>Copy</span>
+                    </Button>
+                </div>
             </div>
             <p className="block lg:hidden text-center font-semibold">
                 Please view using a larger screen for better viewing

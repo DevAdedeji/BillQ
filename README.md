@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🧾 BillQ
 
-## Getting Started
+A modern, intelligent invoicing web app for freelancers and small businesses — designed to make invoice creation, tracking, and payments seamless.
 
-First, run the development server:
+Built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, **shadcn/ui**, **NextAuth**, and **Prisma (MongoDB)**.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Features Implemented
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 🔐 Authentication
+- Email/password authentication using **NextAuth**.
+- Session management integrated with Prisma user model.
+- User profile and company info stored in MongoDB.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🧾 Invoices
+- **Invoice CRUD:** Create, view, and edit invoices.
+- **Invoice Preview Page:** Responsive layout with itemized details, client info, and summary totals.
+- **Download as PDF:** Users can download invoice previews as a PDF using a custom `printPDF()` utility.
+- **Public Invoice Page (SSR):**
+  - Fully **server-rendered** for SEO and OG tags.
+  - Dynamically generates metadata (`title`, `og:title`, and description) from invoice data.
+  - Fetches user and client information directly from the database via Prisma.
 
-## Learn More
+### 💰 Clients
+- Each invoice is linked to a specific client.
+- Client details (name, email, address) are rendered dynamically.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 💾 Database Schema
+Using **Prisma ORM** with a **MongoDB** adapter.
+Main models include:
+- `User`
+- `Client`
+- `Invoice`
+- `InvoiceItem`
+- `Payment`

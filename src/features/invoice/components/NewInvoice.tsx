@@ -37,17 +37,13 @@ import {
 } from "react-hook-form"
 import { useNewInvoice } from "../hooks/useNewInvoice"
 import { useClients } from "@/features/clients/hooks/useClients"
-import { formatCurrency, getErrorMessage } from "@/utils"
+import { formatCurrency } from "@/utils"
 import CurrencyInput from "@/components/ui/currency-input"
 
-interface NewInvoiceProps {
-    closeDialog: () => void
-}
 
-export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
+export default function NewInvoice() {
     const {
         handleSubmit,
-        reset,
         control,
         register,
         setValue,
@@ -89,16 +85,7 @@ export default function NewInvoice({ closeDialog }: NewInvoiceProps) {
 
     const { data: clients } = useClients()
 
-    const { mutate, isPending } = useNewInvoice({
-        onSuccess: () => {
-            toast.success("Invoice created successfully")
-            reset()
-            closeDialog()
-        },
-        onError: (e: unknown) => {
-            toast.error(getErrorMessage(e) || "Something went wrong")
-        },
-    })
+    const { mutate, isPending } = useNewInvoice()
 
     const addItem = () => {
         append({ name: "", description: "", quantity: 1, price: 0, totalPrice: 0 })
