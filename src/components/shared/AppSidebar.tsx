@@ -47,7 +47,7 @@ export function AppSidebar() {
                         )
                     })}
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild onClick={() => signOut({ callbackUrl: "/login" })}>
+                        <SidebarMenuButton asChild onClick={() => signOut({ callbackUrl: "/auth/login" })}>
                             <div className="h-10 flex items-center gap-2 text-red-500">
                                 <LogOut />
                                 <span>Log out</span>
