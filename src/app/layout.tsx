@@ -8,11 +8,43 @@ const RobotoSlab = Roboto_Slab({
   subsets: ["latin"],
 });
 
-
 export const metadata: Metadata = {
-  title: "BillQ",
-  description: "Invoicing made effortless",
-};
+  title: {
+    default: "BillQ — Smart Invoicing for Freelancers",
+    template: "%s | BillQ",
+  },
+  description:
+    "BillQ helps freelancers and small businesses create invoices, send PayLinks, and get paid faster — powered by AI and Stripe.",
+  openGraph: {
+    title: "BillQ — Smart Invoicing for Freelancers",
+    description:
+      "Create invoices in seconds with AI, share payment links, and get paid seamlessly through Stripe or Paystack.",
+    url: "https://billq.vercel.app",
+    siteName: "BillQ",
+    images: [
+      {
+        url: "https://billq.vercel.app/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "BillQ — AI-powered Invoicing",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "BillQ — Smart Invoicing for Freelancers",
+    description:
+      "Generate invoices with AI, send payment links, and track payments effortlessly.",
+    images: ["https://billq.vercel.app/og-image.png"],
+    creator: "@yourhandle",
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+}
+
 
 export default function RootLayout({
   children,
