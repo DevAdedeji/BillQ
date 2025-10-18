@@ -89,7 +89,12 @@ export default function InvoicesPageContent() {
         router.push(`/dashboard/invoices/${id}`)
     }
 
-    const filteredInvoices = invoices?.filter((invoice: Invoice) => invoice.invoiceNumber.toLowerCase().includes(searchQuery.toLowerCase()))
+    const filteredInvoices = invoices?.filter(
+        (invoice: Invoice) =>
+            (invoice.invoiceNumber ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (invoice.client?.name ?? "").toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
 
     if (isDataLoading) return <LoadingSkeleton />
 
@@ -156,7 +161,7 @@ export default function InvoicesPageContent() {
                                                     <TableRow key={invoice.id} className="hover:bg-slate-50" onClick={() => goToInvoicePage(invoice.id)}>
                                                         <TableCell className="font-medium">{invoice.invoiceNumber}</TableCell>
                                                         <TableCell className="font-medium">{formatDate(invoice.dueDate)}</TableCell>
-                                                        <TableCell className="font-medium">{invoice.client.name}</TableCell>
+                                                        <TableCell className="font-medium">{invoice.client?.name || "N/A"}</TableCell>
                                                         <TableCell className="font-medium">
                                                             <StatusBadge status={invoice.status} />
                                                         </TableCell>

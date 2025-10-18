@@ -61,8 +61,8 @@ export default function PaymentsPageContent() {
                                     const invoice = payment.invoice
                                     return (
                                         <TableRow key={payment.id}>
-                                            <TableCell>{invoice.invoiceNumber || "N/A"}</TableCell>
-                                            <TableCell>{invoice.client.name || "N/A"}</TableCell>
+                                            <TableCell>{invoice?.invoiceNumber || "N/A"}</TableCell>
+                                            <TableCell>{invoice?.client?.name || "N/A"}</TableCell>
                                             <TableCell>{formatCurrency(payment.amount)}</TableCell>
                                             <TableCell>
                                                 <StatusBadge status={payment.status} />

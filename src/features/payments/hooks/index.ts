@@ -5,7 +5,7 @@ import { fetchPayments } from "../services"
 
 export const usePayments = () => {
     return useQuery<Payment[], Error>({
-        queryKey: ["invoices"],
+        queryKey: ["payments"],
         queryFn: fetchPayments,
         staleTime: 1000 * 60
     })

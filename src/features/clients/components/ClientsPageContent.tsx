@@ -88,9 +88,8 @@ export default function ClientsPageContent() {
         router.push(`/dashboard/clients/${id}`)
     }
 
-    const filteredClients = clients?.filter((client: Client) => client.name.toLowerCase().includes(searchQuery.toLowerCase()) || client.email.toLowerCase().includes(searchQuery.toLowerCase()))
+    const filteredClients = clients?.filter((client: Client) => client.name?.toLowerCase().includes(searchQuery.toLowerCase()) || client.email?.toLowerCase().includes(searchQuery.toLowerCase()))
 
-    const hasClients = clients && clients.length > 0;
 
     if (isDataLoading) return <LoadingSkeleton />
 
