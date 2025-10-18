@@ -10,7 +10,7 @@ export async function middleware(req: NextRequest) {
     }
 
     if (token && (pathname.startsWith("/auth/login") || pathname.startsWith("/auth/signup"))) {
-        return NextResponse.redirect(new URL("/dashboard/invoices", req.url))
+        return NextResponse.redirect(new URL("/dashboard/overview", req.url))
     }
 
     return NextResponse.next()

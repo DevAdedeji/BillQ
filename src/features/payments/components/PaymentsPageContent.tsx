@@ -57,17 +57,20 @@ export default function PaymentsPageContent() {
                         payments && payments.length > 0 &&
                         <TableBody>
                             {
-                                payments.map((payment) => (
-                                    <TableRow key={payment.id}>
-                                        <TableCell>{payment.invoice.invoiceNumber}</TableCell>
-                                        <TableCell>{payment.invoice.client.name}</TableCell>
-                                        <TableCell>{formatCurrency(payment.amount)}</TableCell>
-                                        <TableCell>
-                                            <StatusBadge status={payment.status} />
-                                        </TableCell>
-                                        <TableCell>{formatDate(payment.createdAt)}</TableCell>
-                                    </TableRow>
-                                ))
+                                payments.map((payment) => {
+                                    const invoice = payment.invoice
+                                    return (
+                                        <TableRow key={payment.id}>
+                                            <TableCell>{invoice.invoiceNumber || "N/A"}</TableCell>
+                                            <TableCell>{invoice.client.name || "N/A"}</TableCell>
+                                            <TableCell>{formatCurrency(payment.amount)}</TableCell>
+                                            <TableCell>
+                                                <StatusBadge status={payment.status} />
+                                            </TableCell>
+                                            <TableCell>{formatDate(payment.createdAt)}</TableCell>
+                                        </TableRow>
+                                    )
+                                })
                             }
                         </TableBody>
                     }

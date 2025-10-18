@@ -32,6 +32,16 @@ vi.mock("sonner", () => ({
   },
 }))
 
+vi.mock("@/features/clients/hooks/useNewClient", () => ({
+  useNewCLient: (options?: { onSuccess?: () => void, onError?: () => void }) => ({
+    isPending: false,
+    mutate: vi.fn(() => {
+      options?.onSuccess?.()
+    })
+  })
+})
+)
+
 global.fetch = vi.fn(() =>
   new Promise((resolve) =>
     setTimeout(

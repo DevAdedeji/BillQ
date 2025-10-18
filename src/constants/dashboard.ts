@@ -1,11 +1,11 @@
-import { Settings, Users, ScrollText, CircleDollarSign } from "lucide-react"
+import { Settings, Users, ScrollText, CircleDollarSign, LayoutGrid } from "lucide-react"
 
 export const dashboardLinks = [
-    // {
-    //     title: "Overview",
-    //     url: "/dashboard/overview",
-    //     icon: LayoutGrid,
-    // },
+    {
+        title: "Overview",
+        url: "/dashboard/overview",
+        icon: LayoutGrid,
+    },
     {
         title: "Invoices",
         url: "/dashboard/invoices",
