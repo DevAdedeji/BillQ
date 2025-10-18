@@ -24,12 +24,6 @@ export default function AppBottomBar() {
                         )
                     })
                 }
-                <button className="h-full flex flex-col justify-between items-center gap-1 text-red-500 text-xs" onClick={() => signOut({ callbackUrl: "/auth/login" })}>
-                    <div className="border border-gray-300 bg-red-100 rounded-lg size-8 flex items-center justify-center">
-                        <LogOut size={16} />
-                    </div>
-                    <p>Log out</p>
-                </button>
             </div>
         </footer>
     )
