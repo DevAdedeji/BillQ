@@ -1,14 +1,14 @@
 "use client"
-import { useMutation, useQuery } from "@tanstack/react-query"
-import { Invoice } from "../types"
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query"
+import { Invoice, InvoicePageData } from "../types"
 import { fetchInvoices, fetchInvoiceDetails, handlePay, verifyPayment } from "../services"
 import { toast } from "sonner"
 
-export const useInvoices = () => {
-    return useQuery<Invoice[], Error>({
-        queryKey: ["invoices"],
-        queryFn: fetchInvoices,
-        staleTime: 1000 * 60
+export const useInvoices = (status: string, page: number) => {
+    return useQuery<InvoicePageData, Error>({
+        queryKey: ["invoices", status, page],
+        queryFn: () => fetchInvoices(status, page),
+        placeholderData: keepPreviousData,
     })
 }
 

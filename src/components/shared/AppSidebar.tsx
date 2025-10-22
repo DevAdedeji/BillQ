@@ -9,21 +9,20 @@ import {
     SidebarMenuItem,
     SidebarFooter
 } from "@/components/ui/sidebar"
-import { Skeleton } from "@/components/ui/skeleton"
+import { useDashboardStore } from "@/store/dashboard-store"
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { LogOut, User2 } from "lucide-react"
 import { dashboardLinks } from "@/constants/dashboard"
-import { useCurrentUser } from "@/lib/session"
 import { signOut } from "next-auth/react"
 
 export function AppSidebar() {
     const pathname = usePathname()
-    const { user, isLoading } = useCurrentUser()
+    const { user } = useDashboardStore()
     return (
         <Sidebar className="!w-[240px]">
-            <SidebarHeader className="pt-4">
+            <SidebarHeader className="pt-4 border-b">
                 <Link href="/" className="flex items-center gap-2">
                     <Image src="/logo.svg" height={40} width={40} alt="logo" />
                     <h2 className="text-2xl font-bold text-content-light dark:text-content-dark">
@@ -51,11 +50,7 @@ export function AppSidebar() {
 
             <SidebarFooter className="pb-4 border-t">
                 {
-                    !user && isLoading &&
-                    <Skeleton className="h-12 bg-slate-300" />
-                }
-                {
-                    user && !isLoading &&
+                    user &&
                     <div className="flex items-center justify-between gap-1">
                         {
                             user.image?.length ?

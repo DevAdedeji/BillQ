@@ -16,7 +16,6 @@ import { formatDate, formatCurrency } from "@/utils"
 import StatusBadge from "@/features/invoice/components/StatusBadge"
 import { TriangleAlert, CircleDollarSign, Users, ScrollText, Plus } from "lucide-react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 
 function LoadingSkeleton() {
     return (
@@ -71,16 +70,12 @@ export default function OverviewPageContent() {
     return (
         <div className="flex flex-col gap-10 px-4 py-8 lg:p-6">
             <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
-                <h2 className="text-2xl font-semibold">Welcome back!</h2>
-                <div className="w-auto flex items-center gap-4">
-                    <Button className="w-1/2 md:w-fit">
-                        <Plus />
+                <h2 className="text-2xl font-semibold hidden lg:block">Welcome back!</h2>
+                <div className="self-end w-auto flex items-center gap-4">
+                    <Link href="/dashboard/invoices/create" className="text-sm flex items-center gap-2 bg-primary text-white h-9 px-4 py-2 rounded-md">
+                        <Plus size={14} />
                         <span>New Invoice</span>
-                    </Button>
-                    <Button className="w-1/2 md:w-fit" variant={"outline"}>
-                        <Plus />
-                        <span>New Client</span>
-                    </Button>
+                    </Link>
                 </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

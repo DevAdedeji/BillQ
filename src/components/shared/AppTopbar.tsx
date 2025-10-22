@@ -13,7 +13,7 @@ export default function AppTopbar() {
     )
 
     return (
-        <header className="w-full h-16 flex items-center justify-between px-4 lg:px-8 border-b border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
+        <header className="fixed z-50 top-0 bg-white w-full h-16 flex items-center justify-between px-4 lg:px-8 border-b border-gray-200 dark:border-gray-800 bg-background-light dark:bg-background-dark">
             <Link href="/" className="md:hidden flex items-center gap-2">
                 <Image src="/logo.svg" height={40} width={40} alt="logo" />
             </Link>

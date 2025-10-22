@@ -32,3 +32,22 @@ export interface Invoice {
     invoiceNumber: string
     user: User
 }
+
+
+export interface InvoicePageData {
+    invoices: Invoice[]
+    pagination: {
+        page: number
+        limit: number
+        totalPages: number
+        totalInvoices: number
+        hasNextPage: boolean
+        hasPreviousPage: boolean
+    }
+    stats: {
+        totalInvoices: number
+        pendingInvoices: number
+        overdueInvoices: number
+        paidInvoices: number
+    }
+}

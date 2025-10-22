@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 function LoadingSkeleton() {
-    return <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
+    return <div className="flex flex-col gap-6 py-8 px-4 lg:px-6">
         <div className="flex items-center justify-between">
             <Skeleton className="h-10 w-[80%] lg:w-[40%] bg-slate-200" />
             <Skeleton className="w-10 lg:w-20 h-6 bg-slate-200" />
@@ -59,7 +59,7 @@ export default function InvoiceDetails({ id }: { id: string }) {
     if (isPending) return <LoadingSkeleton />
 
     if (invoice) return (
-        <div className="flex flex-col gap-8 px-4 py-8 lg:p-8">
+        <div className="flex flex-col gap-8 px-4 py-8 lg:p-6">
             <div className="flex items-center justify-between">
                 <Link href="/dashboard/invoices" className="flex items-center gap-1">
                     <ArrowLeft />

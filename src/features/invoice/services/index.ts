@@ -1,14 +1,14 @@
-import { Invoice } from "../types"
+import { InvoicePageData, Invoice } from "../types"
 import { InvoiceFormInputs } from "../schemas";
 
-export const fetchInvoices = async (): Promise<Invoice[]> => {
-    const res = await fetch("/api/invoices", { cache: "no-store" })
+export const fetchInvoices = async (status: string, page: number): Promise<InvoicePageData> => {
+    const res = await fetch(`/api/invoices?status=${status}&page=${page}`, { cache: "no-store" })
     if (!res.ok) {
         const error = await res.json()
         throw new Error(error.error || "Failed to fetch invoices")
     }
     const data = await res.json()
-    return data.data as Invoice[]
+    return data.data as InvoicePageData
 }
 
 export const fetchInvoiceDetails = async (id: string): Promise<Invoice> => {

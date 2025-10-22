@@ -13,7 +13,6 @@ export const useNewInvoice = () => {
     return useMutation({
         mutationFn: (data: InvoiceFormInputs) => createInvoice(data),
         onSuccess: (data) => {
-            console.log(data)
             toast.success("Invoice created successfully")
             router.push(`/dashboard/invoices/${data.invoice.id}`)
         },
