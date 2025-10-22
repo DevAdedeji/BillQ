@@ -22,7 +22,7 @@ export function AppSidebar() {
     const pathname = usePathname()
     const { user, isLoading } = useCurrentUser()
     return (
-        <Sidebar>
+        <Sidebar className="!w-[240px]">
             <SidebarHeader className="pt-4">
                 <Link href="/" className="flex items-center gap-2">
                     <Image src="/logo.svg" height={40} width={40} alt="logo" />
@@ -49,23 +49,23 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarContent>
 
-            <SidebarFooter className="pb-4">
+            <SidebarFooter className="pb-4 border-t">
                 {
                     !user && isLoading &&
                     <Skeleton className="h-12 bg-slate-300" />
                 }
                 {
                     user && !isLoading &&
-                    <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center justify-between gap-1">
                         {
                             user.image?.length ?
                                 <Image src={user.image} alt={user.name + "profile picture"} height={40} width={40} className="rounded-full" />
                                 :
                                 <User2 />
                         }
-                        <div className="w-[60%] text-sm flex flex-col gap-2">
+                        <div className="w-[60%] text-sm flex flex-col gap-1">
                             <p className="w-full truncate">{user.name}</p>
-                            <p className="w-full truncate">{user.email}</p>
+                            <p className="w-full truncate text-xs">{user.email}</p>
                         </div>
                         <button className="text-red-500" onClick={() => signOut({ callbackUrl: "/auth/login" })}>
                             <LogOut />

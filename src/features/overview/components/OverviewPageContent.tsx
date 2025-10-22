@@ -14,11 +14,15 @@ import {
 import EmptyTableState from "@/components/shared/EmptyTableState"
 import { formatDate, formatCurrency } from "@/utils"
 import StatusBadge from "@/features/invoice/components/StatusBadge"
+import { TriangleAlert, CircleDollarSign, Users, ScrollText, Plus } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 function LoadingSkeleton() {
     return (
         <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <Skeleton className="w-full h-[120px] bg-slate-200" />
                 <Skeleton className="w-full h-[120px] bg-slate-200" />
                 <Skeleton className="w-full h-[120px] bg-slate-200" />
                 <Skeleton className="w-full h-[120px] bg-slate-200" />
@@ -65,27 +69,64 @@ export default function OverviewPageContent() {
     if (isDataLoading) return <LoadingSkeleton />
     if (isError) return <div></div>
     return (
-        <div className="flex flex-col gap-10 px-4 py-8 lg:p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="bg-slate-100 h-[150px] flex flex-col justify-between p-6 rounded-md shadow-lg border border-slate-200">
-                    <h2 className="font-medium">Total Earned</h2>
-                    <p className="text-green-800 font-semibold">{formatCurrency(data?.totalEarned)}</p>
-                </div>
-                <div className="bg-slate-100 h-[150px] flex flex-col justify-between p-6 rounded-md shadow-lg border border-slate-200">
-                    <h2 className="font-medium">Total Due</h2>
-                    <p className="text-red-800">{formatCurrency(data?.totalDue)}</p>
-                </div>
-                <div className="bg-slate-100 h-[150px] flex flex-col justify-between p-6 rounded-md shadow-lg border border-slate-200">
-                    <h2 className="font-medium">Total Invoices</h2>
-                    <p>{data?.totalInvoices}</p>
-                </div>
-                <div className="bg-slate-100 h-[150px] flex flex-col justify-between p-6 rounded-md shadow-lg border border-slate-200">
-                    <h2 className="font-medium">Total Clients</h2>
-                    <p>{data?.totalClients}</p>
+        <div className="flex flex-col gap-10 px-4 py-8 lg:p-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
+                <h2 className="text-2xl font-semibold">Welcome back!</h2>
+                <div className="w-auto flex items-center gap-4">
+                    <Button className="w-1/2 md:w-fit">
+                        <Plus />
+                        <span>New Invoice</span>
+                    </Button>
+                    <Button className="w-1/2 md:w-fit" variant={"outline"}>
+                        <Plus />
+                        <span>New Client</span>
+                    </Button>
                 </div>
             </div>
-            <div className="flex lg:flex-row flex-col justify-between gap-10 overflow-x-hidden">
-                <div className="w-full lg:w-1/2">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="border border-[#F0F0F0] bg-white h-[150px] flex flex-col justify-between p-4 rounded-md">
+                    <div className="flex items-center gap-1">
+                        <div className="size-11 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                            <CircleDollarSign size={24} />
+                        </div>
+                        <h2 className="font-medium text-sm text-[#5A5A5A]">Total Earned</h2>
+                    </div>
+                    <p className="text-black text-xl lg:text-2xl font-semibold">{formatCurrency(data?.totalEarned)}</p>
+                </div>
+                <div className="border border-[#F0F0F0] bg-white min-h-[150px] flex flex-col justify-between p-4 rounded-md">
+                    <div className="flex items-center gap-1">
+                        <div className="size-11 rounded-full bg-[#FDECEC] text-red-600 flex items-center justify-center">
+                            <TriangleAlert size={24} />
+                        </div>
+                        <h2 className="font-medium text-sm text-[#5A5A5A]">Total Due</h2>
+                    </div>
+                    <p className="text-black text-xl lg:text-2xl font-semibold">{formatCurrency(data?.totalDue)}</p>
+                </div>
+                <div className="border border-[#F0F0F0] bg-white h-[150px] flex flex-col justify-between p-4 rounded-md">
+                    <div className="flex items-center gap-1">
+                        <div className="size-11 rounded-full bg-[#F4F4F4] text-[#5A5A5A] flex items-center justify-center">
+                            <ScrollText size={24} />
+                        </div>
+                        <h2 className="font-medium text-sm text-[#5A5A5A]">Total Invoices</h2>
+                    </div>
+                    <p className="text-black text-xl lg:text-2xl font-semibold">{data?.totalInvoices}</p>
+                </div>
+                <div className="border border-[#F0F0F0] bg-white h-[150px] flex flex-col justify-between p-4 rounded-md">
+                    <div className="flex items-center gap-1">
+                        <div className="size-11 rounded-full bg-[#F4F4F4] text-[#5A5A5A] flex items-center justify-center">
+                            <Users size={24} />
+                        </div>
+                        <h2 className="font-medium text-sm text-[#5A5A5A]">Total Clients</h2>
+                    </div>
+                    <p className="text-black text-xl lg:text-2xl font-semibold">{data?.totalClients}</p>
+                </div>
+            </div>
+            <div className="flex lg:flex-row flex-col justify-between gap-6 overflow-x-hidden">
+                <div className="w-full lg:w-1/2 border border-[#F0F0F0] bg-white p-4 rounded-md flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-medium">Latest Invoices</h2>
+                        <Link href="/dashboard/invoices" className="text-xs text-primary font-semibold underline">View all invoices</Link>
+                    </div>
                     <Table>
                         <TableHeader>
                             <TableRow className="bg-slate-100">
@@ -118,7 +159,11 @@ export default function OverviewPageContent() {
                         }
                     </Table>
                 </div>
-                <div className="w-full lg:w-1/2">
+                <div className="w-full lg:w-1/2 border border-[#F0F0F0] bg-white p-4 rounded-md flex flex-col gap-4">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-xl font-medium">Latest Payments</h2>
+                        <Link href="/dashboard/invoices" className="text-xs text-primary font-semibold underline">View all payments</Link>
+                    </div>
                     <Table>
                         <TableHeader>
                             <TableRow className="bg-slate-100">

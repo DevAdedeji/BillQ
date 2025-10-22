@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
-import { Roboto_Slab } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 import NextAuthProvider from "@/providers/session-provider";
 import { Toaster } from "sonner";
 
-const RobotoSlab = Roboto_Slab({
+const RobotoSlab = Inter({
   subsets: ["latin"],
 });
 
