@@ -69,27 +69,28 @@ model Client {
 }
 
 model Invoice {
-    id            String        @id @default(auto()) @map("_id") @db.ObjectId
-    userId        String
-    invoiceNumber String        @unique
-    clientId      String        @db.ObjectId
-    client        Client        @relation(fields: [clientId], references: [id])
-    subTotal      Float         @default(0)
-    tax           Float         @default(0)
-    discount      Float         @default(0)
-    totalAmount   Float         @default(0)
-    paidAmount    Float         @default(0)
-    dueAmount     Float         @default(0)
-    issueDate     DateTime      @default(now())
-    dueDate       DateTime
-    status        InvoiceStatus @default(PENDING)
-    items         InvoiceItem[]
-    payments      Payment[]
-    notes         String?
-    terms         String?
-    createdAt     DateTime      @default(now())
-    updatedAt     DateTime      @updatedAt
-    user          User          @relation(fields: [userId], references: [id])
+    id              String            @id @default(auto()) @map("_id") @db.ObjectId
+    userId          String
+    invoiceNumber   String            @unique
+    clientId        String            @db.ObjectId
+    client          Client            @relation(fields: [clientId], references: [id])
+    subTotal        Float             @default(0)
+    tax             Float             @default(0)
+    discount        Float             @default(0)
+    totalAmount     Float             @default(0)
+    paidAmount      Float             @default(0)
+    dueAmount       Float             @default(0)
+    issueDate       DateTime          @default(now())
+    dueDate         DateTime
+    status          InvoiceStatus     @default(PENDING)
+    items           InvoiceItem[]
+    payments        Payment[]
+    notes           String?
+    terms           String?
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
+    user            User              @relation(fields: [userId], references: [id])
+    InvoiceReminder InvoiceReminder[]
 }
 
 enum InvoiceStatus {
@@ -124,4 +125,19 @@ model Payment {
     status          String
     metadata        Json?
     createdAt       DateTime @default(now())
+}
+
+model InvoiceReminder {
+    id        String       @id @default(auto()) @map("_id") @db.ObjectId
+    invoiceId String       @db.ObjectId
+    invoice   Invoice      @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+    type      ReminderType
+    sent      Boolean      @default(false)
+    sentAt    DateTime?
+    createdAt DateTime     @default(now())
+}
+
+enum ReminderType {
+    SEVEN_DAYS_BEFORE
+    THREE_DAYS_BEFORE
 }
