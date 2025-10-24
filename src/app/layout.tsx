@@ -1,6 +1,6 @@
-import type { Metadata } from "next"
-import { Inter } from "next/font/google"
-import "./globals.css"
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
 import NextAuthProvider from "@/providers/session-provider";
 import { Toaster } from "sonner";
 
@@ -43,8 +43,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
-}
-
+};
 
 export default function RootLayout({
   children,
@@ -53,12 +52,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${RobotoSlab.className} antialiased tracking-wide`}
-      >
-        <NextAuthProvider>
-          {children}
-        </NextAuthProvider>
+      <body className={`${RobotoSlab.className} antialiased tracking-wide`}>
+        <NextAuthProvider>{children}</NextAuthProvider>
         <Toaster position="top-right" />
       </body>
     </html>

@@ -4,7 +4,6 @@ A modern, intelligent invoicing web app for freelancers and small businesses —
 
 Built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, **shadcn/ui**, **NextAuth**, and **Prisma (MongoDB)**.
 
-
 **Live Demo:** [https://billq.vercel.app]
 
 ---
@@ -12,11 +11,13 @@ Built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, **shadcn/ui**, **Ne
 ## 🚀 Features Implemented
 
 ### 🔐 Authentication
+
 - Email/password authentication using **NextAuth**.
 - Session management integrated with Prisma user model.
 - User profile and company info stored in MongoDB.
 
 ### 🧾 Invoices
+
 - **Invoice CRUD:** Create, view, and edit invoices.
 - **Invoice Preview Page:** Responsive layout with itemized details, client info, and summary totals.
 - **Download as PDF:** Users can download invoice previews as a PDF using a custom `printPDF()` utility.
@@ -26,13 +27,15 @@ Built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, **shadcn/ui**, **Ne
   - Fetches user and client information directly from the database via Prisma.
 
 ### 💰 Clients
+
 - Each invoice is linked to a specific client.
 - Client details (name, email, address) are rendered dynamically.
 
-
 ### 💾 Database Schema
+
 Using **Prisma ORM** with a **MongoDB** adapter.
 Main models include:
+
 - `User`
 - `Client`
 - `Invoice`
@@ -45,8 +48,8 @@ To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-*   Node.js (v22)
-*   npm or yarn
+- Node.js (v22)
+- npm or yarn
 
 ### Installation
 
@@ -84,14 +87,17 @@ To get a local copy up and running, follow these simple steps.
 ### Running the Application
 
 Start the development server:
+
 ```sh
 npm run dev
 ```
+
 Open http://localhost:3000 to view it in the browser.
 
 ### Running Tests
+
 To run the component and integration tests, use the following command:
+
 ```sh
 npm run test
 ```
-
