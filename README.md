@@ -80,7 +80,7 @@ To get a local copy up and running, follow these simple steps.
 
     ```env
     # .env.local
-    DATABASE_URL="
+    DATABASE_URL=""
     GEMINI_API_KEY=""
     NEXTAUTH_SECRET=""
     GOOGLE_CLIENT_ID=""
