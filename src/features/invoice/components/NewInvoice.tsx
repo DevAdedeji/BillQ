@@ -123,7 +123,7 @@ export default function NewInvoice() {
               control={control}
               render={({ field }) => (
                 <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
+                  <SelectTrigger data-testid="client-select">
                     <SelectValue placeholder="Select client" />
                   </SelectTrigger>
                   <SelectContent>

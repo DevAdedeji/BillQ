@@ -14,7 +14,9 @@
     "test:component": "vitest run src/components",
     "test:api": "vitest run src/app/api",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
-    "postinstall": "npm run prisma:generate"
+    "postinstall": "npm run prisma:generate",
+    "test:e2e": "cross-env NODE_ENV=test npx playwright test",
+    "test:all": "npm run test && npm run test:e2e"
   },
   "dependencies": {
     "@google/genai": "^1.25.0",
@@ -57,6 +59,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^3.2.4",
+    "cross-env": "^10.1.0",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
     "eslint-config-prettier": "^10.1.8",
@@ -64,6 +68,8 @@
     "husky": "^9.1.7",
     "jsdom": "^27.0.0",
     "lint-staged": "^16.2.6",
+    "mongodb-memory-server": "^10.2.3",
+    "playwright": "^1.56.1",
     "prettier": "^3.6.2",
     "prisma": "^6.17.1",
     "tailwindcss": "^4",

@@ -8,6 +8,13 @@ Built with **Next.js 15**, **TypeScript**, **Tailwind CSS**, **shadcn/ui**, **Ne
 
 ---
 
+## 📸 Screenshots
+
+
+| Dashboard & Overview | Create Invoice with AI | Create Client |
+| :---: | :---: | :---: |
+| ![Dashboard Screenshot](.github/assets/dashboard.gif) | ![Create invoice with ai Screenshot](.github/assets/billq-ai.gif) | ![Create Client Screenshot](.github/assets/create-client-billq.gif) |
+
 ## 🚀 Features Implemented
 
 ### 🔐 Authentication
@@ -96,8 +103,10 @@ Open http://localhost:3000 to view it in the browser.
 
 ### Running Tests
 
+This project uses **Vitest** for unit and component tests, and **Playwright** for end-to-end (E2E) tests.
+
 To run the component and integration tests, use the following command:
 
 ```sh
-npm run test
+npm run test:all
 ```

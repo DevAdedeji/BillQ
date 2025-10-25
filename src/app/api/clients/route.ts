@@ -31,7 +31,6 @@ export async function POST(req: Request) {
       },
     });
     if (existingClient) {
-      console.log(existingClient);
       return NextResponse.json(
         { error: "Client already exists" },
         { status: 400 },

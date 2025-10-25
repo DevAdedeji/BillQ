@@ -8,6 +8,7 @@ export default defineConfig({
     typecheck: {
       tsconfig: "./tsconfig.test.json",
     },
+    exclude: ["tests/e2e/**", "node_modules"]
   },
   resolve: {
     alias: {
