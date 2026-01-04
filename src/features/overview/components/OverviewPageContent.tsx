@@ -20,158 +20,197 @@ import {
   Users,
   ScrollText,
   Plus,
+  ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 function LoadingSkeleton() {
   return (
-    <div className="flex flex-col gap-6 py-8 px-4 lg:px-8">
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Skeleton className="w-full h-[120px] bg-slate-200" />
-        <Skeleton className="w-full h-[120px] bg-slate-200" />
-        <Skeleton className="w-full h-[120px] bg-slate-200" />
-        <Skeleton className="w-full h-[120px] bg-slate-200" />
+    <div className="flex flex-col gap-6 p-4 lg:p-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[...Array(4)].map((_, i) => (
+          <Skeleton key={i} className="h-[150px] rounded-lg" />
+        ))}
       </div>
-      <div className="flex lg:flex-row flex-col justify-between gap-4">
-        <div className="w-full flex flex-col gap-4 lg:w-1/2">
-          <Skeleton className="w-full h-10 bg-slate-200" />
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="grid grid-cols-3 gap-2">
-              <Skeleton className="h-10 bg-slate-200" />
-              <Skeleton className="h-10 bg-slate-200" />
-              <Skeleton className="h-10 bg-slate-200" />
-            </div>
-          ))}
-        </div>
-        <div className="w-full flex flex-col gap-4 lg:w-1/2">
-          <Skeleton className="w-full h-10 bg-slate-200" />
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="grid grid-cols-3 gap-2">
-              <Skeleton className="h-10 bg-slate-200" />
-              <Skeleton className="h-10 bg-slate-200" />
-              <Skeleton className="h-10 bg-slate-200" />
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="flex flex-col gap-4">
+            <Skeleton className="h-10 w-full rounded-lg" />
+            {[...Array(3)].map((_, j) => (
+              <Skeleton key={j} className="h-16 w-full rounded-lg" />
+            ))}
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
+interface StatCardProps {
+  icon: React.ElementType;
+  iconBgColor: string;
+  iconColor: string;
+  title: string;
+  value: string | number;
+}
+
+function StatCard({ icon: Icon, iconBgColor, iconColor, title, value }: StatCardProps) {
+  return (
+    <div className="flex h-[150px] flex-col justify-between rounded-lg border border-gray-200 bg-white p-4 transition-shadow hover:shadow-md dark:border-gray-800 dark:bg-gray-900">
+      <div className="flex items-center gap-3">
+        <div className={cn("flex h-11 w-11 items-center justify-center rounded-full", iconBgColor, iconColor)}>
+          <Icon className="h-5 w-5" />
+        </div>
+        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400">{title}</h3>
+      </div>
+      <p className="text-2xl font-semibold text-gray-900 dark:text-white lg:text-3xl">
+        {value}
+      </p>
+    </div>
+  );
+}
+
+interface SectionHeaderProps {
+  title: string;
+  href: string;
+  linkText: string;
+}
+
+function SectionHeader({ title, href, linkText }: SectionHeaderProps) {
+  return (
+    <div className="flex items-center justify-between">
+      <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{title}</h2>
+      <Link
+        href={href}
+        className="group flex items-center gap-1 text-sm font-medium text-primary transition-colors hover:text-primary/80"
+      >
+        <span>{linkText}</span>
+        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+      </Link>
+    </div>
+  );
+}
+
+// Main Component
 export default function OverviewPageContent() {
   const { data, isLoading, isFetching, isError } = useFetchOverview();
   const isDataLoading = isLoading || (!!data && isFetching);
   const router = useRouter();
+
   const goToInvoicePage = (id: string) => {
     router.push(`/dashboard/invoices/${id}`);
   };
+
   if (isDataLoading) return <LoadingSkeleton />;
-  if (isError) return <div></div>;
+
+  if (isError) {
+    return (
+      <div className="flex h-[400px] items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg font-medium text-gray-900 dark:text-white">
+            Failed to load overview data
+          </p>
+          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+            Please try refreshing the page
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const stats = [
+    {
+      icon: CircleDollarSign,
+      iconBgColor: "bg-green-100 dark:bg-green-900/30",
+      iconColor: "text-green-600 dark:text-green-400",
+      title: "Total Earned",
+      value: formatCurrency(data?.totalEarned),
+    },
+    {
+      icon: TriangleAlert,
+      iconBgColor: "bg-red-100 dark:bg-red-900/30",
+      iconColor: "text-red-600 dark:text-red-400",
+      title: "Total Due",
+      value: formatCurrency(data?.totalDue),
+    },
+    {
+      icon: ScrollText,
+      iconBgColor: "bg-gray-100 dark:bg-gray-800",
+      iconColor: "text-gray-600 dark:text-gray-400",
+      title: "Total Invoices",
+      value: data?.totalInvoices || 0,
+    },
+    {
+      icon: Users,
+      iconBgColor: "bg-gray-100 dark:bg-gray-800",
+      iconColor: "text-gray-600 dark:text-gray-400",
+      title: "Total Clients",
+      value: data?.totalClients || 0,
+    },
+  ];
+
   return (
-    <div className="flex flex-col gap-10 px-4 py-8 lg:p-6">
-      <div className="flex flex-col md:flex-row md:items-center gap-4 justify-between">
-        <h2 className="text-2xl font-semibold hidden lg:block">
+    <div className="flex flex-col gap-6 p-4 lg:p-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h1 className="text-2xl font-semibold text-gray-900 dark:text-white lg:text-3xl">
           Welcome back!
-        </h2>
-        <div className="self-end w-auto flex items-center gap-4">
-          <Link
-            href="/dashboard/invoices/create"
-            className="text-sm flex items-center gap-2 bg-primary text-white h-9 px-4 py-2 rounded-md"
-          >
-            <Plus size={14} />
-            <span>New Invoice</span>
-          </Link>
-        </div>
+        </h1>
+        <Link
+          href="/dashboard/invoices/create"
+          className={cn(
+            "inline-flex h-10 w-fit items-center gap-2 rounded-lg bg-primary px-4 text-sm font-medium text-white",
+            "transition-colors hover:bg-primary/90",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+          )}
+        >
+          <Plus className="h-4 w-4" />
+          <span>New Invoice</span>
+        </Link>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="border border-[#F0F0F0] bg-white h-[150px] flex flex-col justify-between p-4 rounded-md">
-          <div className="flex items-center gap-1">
-            <div className="size-11 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
-              <CircleDollarSign size={24} />
-            </div>
-            <h2 className="font-medium text-sm text-[#5A5A5A]">Total Earned</h2>
-          </div>
-          <p className="text-black text-xl lg:text-2xl font-semibold">
-            {formatCurrency(data?.totalEarned)}
-          </p>
-        </div>
-        <div className="border border-[#F0F0F0] bg-white min-h-[150px] flex flex-col justify-between p-4 rounded-md">
-          <div className="flex items-center gap-1">
-            <div className="size-11 rounded-full bg-[#FDECEC] text-red-600 flex items-center justify-center">
-              <TriangleAlert size={24} />
-            </div>
-            <h2 className="font-medium text-sm text-[#5A5A5A]">Total Due</h2>
-          </div>
-          <p className="text-black text-xl lg:text-2xl font-semibold">
-            {formatCurrency(data?.totalDue)}
-          </p>
-        </div>
-        <div className="border border-[#F0F0F0] bg-white h-[150px] flex flex-col justify-between p-4 rounded-md">
-          <div className="flex items-center gap-1">
-            <div className="size-11 rounded-full bg-[#F4F4F4] text-[#5A5A5A] flex items-center justify-center">
-              <ScrollText size={24} />
-            </div>
-            <h2 className="font-medium text-sm text-[#5A5A5A]">
-              Total Invoices
-            </h2>
-          </div>
-          <p className="text-black text-xl lg:text-2xl font-semibold">
-            {data?.totalInvoices}
-          </p>
-        </div>
-        <div className="border border-[#F0F0F0] bg-white h-[150px] flex flex-col justify-between p-4 rounded-md">
-          <div className="flex items-center gap-1">
-            <div className="size-11 rounded-full bg-[#F4F4F4] text-[#5A5A5A] flex items-center justify-center">
-              <Users size={24} />
-            </div>
-            <h2 className="font-medium text-sm text-[#5A5A5A]">
-              Total Clients
-            </h2>
-          </div>
-          <p className="text-black text-xl lg:text-2xl font-semibold">
-            {data?.totalClients}
-          </p>
-        </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat) => (
+          <StatCard key={stat.title} {...stat} />
+        ))}
       </div>
-      <div className="flex lg:flex-row flex-col justify-between gap-6 overflow-x-hidden">
-        <div className="w-full lg:w-1/2 border border-[#F0F0F0] bg-white p-4 rounded-md flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-medium">Latest Invoices</h2>
-            <Link
-              href="/dashboard/invoices"
-              className="text-xs text-primary font-semibold underline"
-            >
-              View all invoices
-            </Link>
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-slate-100">
-                <TableHead>Client</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Paid Amount</TableHead>
-                <TableHead>Due Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            {data?.invoices && data.invoices.length === 0 ? (
-              <EmptyTableState
-                colSpan={4}
-                title="No Invoices Found"
-                description="Looks like you haven't created any invoices yet."
-              />
-            ) : (
-              <TableBody>
-                {data?.invoices.map((invoice) => {
-                  return (
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+          <SectionHeader
+            title="Latest Invoices"
+            href="/dashboard/invoices"
+            linkText="View all"
+          />
+
+          <div className="overflow-x-auto rounded-md border border-gray-200 dark:border-gray-800">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                  <TableHead className="font-semibold">Client</TableHead>
+                  <TableHead className="font-semibold">Status</TableHead>
+                  <TableHead className="font-semibold">Paid</TableHead>
+                  <TableHead className="font-semibold">Due</TableHead>
+                </TableRow>
+              </TableHeader>
+              {data?.invoices && data.invoices.length === 0 ? (
+                <EmptyTableState
+                  colSpan={4}
+                  title="No Invoices Found"
+                  description="Get started by creating your first invoice."
+                />
+              ) : (
+                <TableBody>
+                  {data?.invoices.map((invoice) => (
                     <TableRow
                       key={invoice.id}
-                      className="hover:bg-slate-50"
+                      className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
                       onClick={() => goToInvoicePage(invoice.id)}
                     >
                       <TableCell className="font-medium">
                         {invoice.client.name}
                       </TableCell>
-                      <TableCell className="font-medium">
+                      <TableCell>
                         <StatusBadge status={invoice.status} />
                       </TableCell>
                       <TableCell className="font-medium">
@@ -181,57 +220,66 @@ export default function OverviewPageContent() {
                         {formatCurrency(invoice.dueAmount)}
                       </TableCell>
                     </TableRow>
-                  );
-                })}
-              </TableBody>
-            )}
-          </Table>
-        </div>
-        <div className="w-full lg:w-1/2 border border-[#F0F0F0] bg-white p-4 rounded-md flex flex-col gap-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-medium">Latest Payments</h2>
-            <Link
-              href="/dashboard/invoices"
-              className="text-xs text-primary font-semibold underline"
-            >
-              View all payments
-            </Link>
+                  ))}
+                </TableBody>
+              )}
+            </Table>
           </div>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-slate-100">
-                <TableHead>Invoice Number</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Paid Amount</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Date</TableHead>
-              </TableRow>
-            </TableHeader>
-            {data?.payments && data?.payments.length === 0 ? (
-              <EmptyTableState
-                colSpan={8}
-                title="No Payments Found"
-                description="Looks like none of your clients has made any payment"
-              />
-            ) : (
-              <TableBody>
-                {data?.payments.map((payment) => {
-                  const invoice = payment.invoice;
-                  return (
-                    <TableRow key={payment.id}>
-                      <TableCell>{invoice.invoiceNumber || "N/A"}</TableCell>
-                      <TableCell>{invoice.client.name || "N/A"}</TableCell>
-                      <TableCell>{formatCurrency(payment.amount)}</TableCell>
-                      <TableCell>
-                        <StatusBadge status={payment.status} />
-                      </TableCell>
-                      <TableCell>{formatDate(payment.createdAt)}</TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            )}
-          </Table>
+        </div>
+
+        <div className="flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+          <SectionHeader
+            title="Latest Payments"
+            href="/dashboard/invoices"
+            linkText="View all"
+          />
+
+          <div className="overflow-x-auto rounded-md border border-gray-200 dark:border-gray-800">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+                  <TableHead className="font-semibold">Invoice #</TableHead>
+                  <TableHead className="font-semibold">Client</TableHead>
+                  <TableHead className="font-semibold">Amount</TableHead>
+                  <TableHead className="font-semibold">Status</TableHead>
+                  <TableHead className="font-semibold">Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              {data?.payments && data.payments.length === 0 ? (
+                <EmptyTableState
+                  colSpan={5}
+                  title="No Payments Found"
+                  description="Payments will appear here once clients start paying."
+                />
+              ) : (
+                <TableBody>
+                  {data?.payments.map((payment) => {
+                    const invoice = payment.invoice;
+                    return (
+                      <TableRow
+                        key={payment.id}
+                        className="transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                      >
+                        <TableCell className="font-medium">
+                          {invoice.invoiceNumber || "N/A"}
+                        </TableCell>
+                        <TableCell>{invoice.client.name || "N/A"}</TableCell>
+                        <TableCell className="font-medium">
+                          {formatCurrency(payment.amount)}
+                        </TableCell>
+                        <TableCell>
+                          <StatusBadge status={payment.status} />
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600 dark:text-gray-400">
+                          {formatDate(payment.createdAt)}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              )}
+            </Table>
+          </div>
         </div>
       </div>
     </div>

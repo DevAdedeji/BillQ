@@ -1,13 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import {
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -19,7 +12,6 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { PlusCircle, Trash2 } from "lucide-react";
 import { InvoiceFormInputs, invoiceFormSchema } from "../schemas";
@@ -27,8 +19,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, Controller, useFieldArray, useWatch } from "react-hook-form";
 import { useNewInvoice } from "../hooks/useNewInvoice";
 import { useClients } from "@/features/clients/hooks/useClients";
-import { formatCurrency } from "@/utils";
 import CurrencyInput from "@/components/ui/currency-input";
+import { cn } from "@/lib/utils";
 
 export default function NewInvoice() {
   const { handleSubmit, control, register, setValue } =
@@ -54,13 +46,11 @@ export default function NewInvoice() {
     name: "items",
   });
 
-  // Watch form values for calculation
   const items = useWatch({ control, name: "items" }) || [];
   const tax = useWatch({ control, name: "tax" }) || 0;
   const discount = useWatch({ control, name: "discount" }) || 0;
   const paidAmount = useWatch({ control, name: "paidAmount" }) || 0;
 
-  // Calculate totals dynamically
   useEffect(() => {
     const subtotal = items.reduce(
       (acc, curr) => acc + (curr.totalPrice || 0),
@@ -74,7 +64,6 @@ export default function NewInvoice() {
   }, [items, tax, discount, paidAmount, setValue]);
 
   const { data: clients } = useClients();
-
   const { mutate, isPending } = useNewInvoice();
 
   const addItem = () => {
@@ -95,91 +84,101 @@ export default function NewInvoice() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      {/* Invoice details */}
-      <FieldSet>
-        <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-2 md:!gap-4">
-          <Field>
-            <FieldLabel>Invoice Number</FieldLabel>
-            <Input {...register("invoiceNumber")} readOnly />
-          </Field>
-          <Field>
-            <FieldLabel>Issue Date</FieldLabel>
-            <Input type="date" {...register("issueDate")} />
-          </Field>
-          <Field>
-            <FieldLabel>Due Date</FieldLabel>
-            <Input type="date" {...register("dueDate")} />
-          </Field>
-        </FieldGroup>
-      </FieldSet>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Invoice Details
+        </h2>
+        <FieldSet>
+          <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-3">
+            <Field>
+              <FieldLabel>Invoice Number</FieldLabel>
+              <Input {...register("invoiceNumber")} readOnly />
+            </Field>
+            <Field>
+              <FieldLabel>Issue Date</FieldLabel>
+              <Input type="date" {...register("issueDate")} />
+            </Field>
+            <Field>
+              <FieldLabel>Due Date</FieldLabel>
+              <Input type="date" {...register("dueDate")} />
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      </div>
 
-      <FieldSet>
-        <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-2 md:!gap-4">
-          <Field>
-            <FieldLabel>Client</FieldLabel>
-            <Controller
-              name="clientId"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger data-testid="client-select">
-                    <SelectValue placeholder="Select client" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {clients?.map((client) => (
-                      <SelectItem key={client.id} value={client.id}>
-                        {client.name}
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Client Information
+        </h2>
+        <FieldSet>
+          <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <Field>
+              <FieldLabel>Client</FieldLabel>
+              <Controller
+                name="clientId"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select client" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {clients?.map((client) => (
+                        <SelectItem key={client.id} value={client.id}>
+                          {client.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel>Status</FieldLabel>
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} value={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PENDING">Pending</SelectItem>
+                      <SelectItem value="PARTIALLY_PAID">
+                        Partially Paid
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </Field>
+                      <SelectItem value="PAID">Paid</SelectItem>
+                      <SelectItem value="OVERDUE">Overdue</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      </div>
 
-          <Field>
-            <FieldLabel>Status</FieldLabel>
-            <Controller
-              name="status"
-              control={control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="PENDING">Pending</SelectItem>
-                    <SelectItem value="PARTIALLY_PAID">
-                      Partially Paid
-                    </SelectItem>
-                    <SelectItem value="PAID">Paid</SelectItem>
-                    <SelectItem value="OVERDUE">Overdue</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </Field>
-        </FieldGroup>
-      </FieldSet>
-
-      {/* Items */}
-      <FieldSet className="bg-muted/50 rounded-md p-4">
-        <FieldLabel>Items</FieldLabel>
-        <div className="space-y-2">
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Invoice Items
+        </h2>
+        <div className="space-y-3">
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="border p-3 rounded-md bg-muted/30 flex flex-col items-start gap-3"
+              className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50"
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Field>
                   <FieldLabel>Name</FieldLabel>
                   <Controller
                     name={`items.${index}.name`}
                     control={control}
                     render={({ field }) => (
-                      <Input placeholder="Name" {...field} />
+                      <Input placeholder="Item name" {...field} />
                     )}
                   />
                 </Field>
@@ -191,7 +190,7 @@ export default function NewInvoice() {
                     render={({ field }) => (
                       <Input
                         type="number"
-                        placeholder="Qty"
+                        placeholder="1"
                         {...field}
                         onChange={(e) => {
                           const value = Number(e.target.value);
@@ -211,7 +210,7 @@ export default function NewInvoice() {
                     render={({ field }) => (
                       <CurrencyInput
                         type="number"
-                        placeholder="Price"
+                        placeholder="0.00"
                         {...field}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                           const value = Number(e.target.value);
@@ -224,91 +223,111 @@ export default function NewInvoice() {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel>Amount</FieldLabel>
+                  <FieldLabel>Total</FieldLabel>
                   <CurrencyInput
                     readOnly
                     type="number"
-                    placeholder="0"
+                    placeholder="0.00"
                     value={items[index]?.totalPrice}
                   />
                 </Field>
               </div>
-              <div className="w-full md:w-1/2">
-                <Controller
-                  name={`items.${index}.description`}
-                  control={control}
-                  render={({ field }) => (
-                    <Textarea placeholder="Description" {...field} />
-                  )}
-                />
+              <div className="mt-3 grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]">
+                <Field>
+                  <FieldLabel>Description (Optional)</FieldLabel>
+                  <Controller
+                    name={`items.${index}.description`}
+                    control={control}
+                    render={({ field }) => (
+                      <Textarea
+                        placeholder="Item description"
+                        className="resize-none"
+                        rows={2}
+                        {...field}
+                      />
+                    )}
+                  />
+                </Field>
+                {fields.length > 1 && (
+                  <div className="flex items-end">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => remove(index)}
+                      className="text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/20"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                )}
               </div>
-              {fields.length > 1 && (
-                <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="text-red-600 underline text-xs"
-                >
-                  Remove item
-                </button>
-              )}
             </div>
           ))}
           <Button
             type="button"
             variant="outline"
             onClick={addItem}
-            className="flex items-center gap-2"
+            className="w-full"
           >
-            <PlusCircle className="h-4 w-4" /> Add Item
+            <PlusCircle className="h-4 w-4" />
+            <span>Add Item</span>
           </Button>
         </div>
-      </FieldSet>
+      </div>
 
-      {/* Totals */}
-      <FieldSet>
-        <FieldGroup className="!grid !grid-cols-2 md:!grid-cols-4 gap-4">
-          <Field>
-            <FieldLabel>Tax</FieldLabel>
-            <CurrencyInput
-              type="number"
-              placeholder="0"
-              {...register("tax", { valueAsNumber: true })}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Discount</FieldLabel>
-            <CurrencyInput
-              type="number"
-              placeholder="0"
-              {...register("discount", { valueAsNumber: true })}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Paid Amount</FieldLabel>
-            <CurrencyInput
-              type="number"
-              placeholder="0"
-              {...register("paidAmount", { valueAsNumber: true })}
-            />
-          </Field>
-          <Field>
-            <FieldLabel>Total Amount</FieldLabel>
-            <CurrencyInput
-              {...register("totalAmount", { valueAsNumber: true })}
-              readOnly
-            />
-          </Field>
-        </FieldGroup>
-      </FieldSet>
+      <div className="rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+        <h2 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">
+          Payment Details
+        </h2>
+        <FieldSet>
+          <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <Field>
+              <FieldLabel>Tax</FieldLabel>
+              <CurrencyInput
+                type="number"
+                placeholder="0.00"
+                {...register("tax", { valueAsNumber: true })}
+              />
+            </Field>
+            <Field>
+              <FieldLabel>Discount</FieldLabel>
+              <CurrencyInput
+                type="number"
+                placeholder="0.00"
+                {...register("discount", { valueAsNumber: true })}
+              />
+            </Field>
+            <Field>
+              <FieldLabel>Paid Amount</FieldLabel>
+              <CurrencyInput
+                type="number"
+                placeholder="0.00"
+                {...register("paidAmount", { valueAsNumber: true })}
+              />
+            </Field>
+            <Field>
+              <FieldLabel>Total Amount</FieldLabel>
+              <CurrencyInput
+                {...register("totalAmount", { valueAsNumber: true })}
+                readOnly
+                className="font-semibold"
+              />
+            </Field>
+          </FieldGroup>
+        </FieldSet>
+      </div>
 
-      <Button
-        type="submit"
-        className="w-full sm:w-[200px]"
-        disabled={isPending}
-      >
-        {isPending && <Spinner />}
-        <span>Save</span>
-      </Button>
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          className="w-full sm:w-auto"
+          disabled={isPending}
+        >
+          {isPending && <Spinner className="mr-2" />}
+          <span>Create Invoice</span>
+        </Button>
+      </div>
     </form>
   );
 }

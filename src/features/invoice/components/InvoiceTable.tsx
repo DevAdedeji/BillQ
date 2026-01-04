@@ -21,13 +21,14 @@ import {
 import EditInvoice from "./EditInvoice";
 import EmptyTableState from "@/components/shared/EmptyTableState";
 import { useRouter } from "next/navigation";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Search } from "lucide-react";
 import { getErrorMessage, formatDate, formatCurrency } from "@/utils";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { useDeleteInvoice } from "../hooks/useDeleteInvoice";
 import StatusBadge from "./StatusBadge";
 import { PaginationControls } from "@/components/shared/PaginationControls";
+import { cn } from "@/lib/utils";
 
 interface InvoiceTableProps {
   invoices: Invoice[];
@@ -45,6 +46,22 @@ interface InvoiceTableProps {
   onPageChange: (page: number) => void;
 }
 
+const FILTERS = [
+  { id: "all", name: "All Invoices", color: null },
+  { id: "paid", name: "Paid", color: "bg-green-500" },
+  { id: "overdue", name: "Overdue", color: "bg-red-500" },
+  { id: "pending", name: "Pending", color: "bg-yellow-500" },
+  { id: "partially_paid", name: "Partially Paid", color: "bg-blue-500" },
+];
+
+const FILTER_COLORS: Record<string, string> = {
+  paid: "bg-green-100 border-green-500 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+  overdue: "bg-red-100 border-red-500 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+  pending: "bg-yellow-100 border-yellow-500 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300",
+  partially_paid: "bg-blue-100 border-blue-500 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+  all: "bg-primary/10 border-primary text-primary dark:bg-primary/20",
+};
+
 export default function InvoiceTable({
   invoices,
   selectedFilter,
@@ -56,54 +73,13 @@ export default function InvoiceTable({
   const [searchQuery, setSearchQuery] = useState("");
   const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
-  const colors: Record<string, string> = {
-    PAID: "bg-green-500",
-    PARTIALLY_PAID: "bg-blue-500",
-    PENDING: "bg-yellow-500",
-    OVERDUE: "bg-red-500",
-    CANCELLED: "bg-zinc-500",
-  };
-  const selectedClassColors: Record<string, string> = {
-    PAID: "bg-green-100 border-green-500 border-2",
-    PARTIALLY_PAID: "bg-blue-100 border-blue-500 border-2",
-    PENDING: "bg-yellow-100 border-yellow-500 border-2",
-    OVERDUE: "bg-red-100 border-red-500 border-2",
-    CANCELLED: "bg-zinc-100 border-zinc-500 border-2",
-    ALL: "bg-blue-100 border-primary border-2",
-  };
-  const filters = [
-    {
-      id: "all",
-      name: "All Invoices",
-    },
-    {
-      id: "paid",
-      name: "paid",
-    },
-    {
-      id: "overdue",
-      name: "Overdue",
-    },
-    {
-      id: "pending",
-      name: "Pending",
-    },
-    {
-      id: "partially_paid",
-      name: "Partially Paid",
-    },
-  ];
 
   const router = useRouter();
-
-  const refreshDetails = () => {
-    refresh();
-  };
 
   const { mutate, isPending } = useDeleteInvoice({
     onSuccess: () => {
       toast.success("Invoice deleted successfully");
-      refreshDetails();
+      refresh();
       setOpenDropdownId(null);
     },
     onError: (err: unknown) => {
@@ -112,9 +88,11 @@ export default function InvoiceTable({
       setOpenDropdownId(null);
     },
   });
+
   const goToInvoicePage = (id: string) => {
     router.push(`/dashboard/invoices/${id}`);
   };
+
   const filteredInvoices = invoices?.filter(
     (invoice: Invoice) =>
       (invoice.invoiceNumber ?? "")
@@ -124,166 +102,177 @@ export default function InvoiceTable({
         .toLowerCase()
         .includes(searchQuery.toLowerCase()),
   );
+
   return (
-    <div>
-      {filteredInvoices && (
-        <div className="border border-[#F0F0F0] bg-white p-4 rounded-md flex flex-col gap-4">
-          <Input
-            placeholder="Search invoices"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="lg:w-[40%]"
-          />
-          <div className="flex items-center flex-wrap gap-4">
-            {filters.map((filter) => {
-              const colorClass = colors[filter.id.toUpperCase()];
-              const selectedColorClass =
-                selectedFilter === filter.id
-                  ? selectedClassColors[filter.id.toUpperCase()]
-                  : "bg-white";
-              return (
-                <button
-                  key={filter.id}
-                  className={`border border-[#B3B3B3] px-3 py-2 text-xs font-medium rounded capitalize flex items-center gap-1 ${selectedColorClass}`}
-                  onClick={() => setSelectedFilter(filter.id)}
-                >
-                  {filter.id !== "all" && (
-                    <div className={`size-2 rounded-full ${colorClass}`}></div>
-                  )}
-                  <span>{filter.name}</span>
-                </button>
-              );
-            })}
-          </div>
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-slate-100">
-                <TableHead>Invoice Number</TableHead>
-                <TableHead>Due Date</TableHead>
-                <TableHead>Client</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Paid Amount</TableHead>
-                <TableHead>Due Amount</TableHead>
-                <TableHead>Total Amount</TableHead>
-                <TableHead className="text-right"></TableHead>
+    <div className="flex flex-col gap-6 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+        <Input
+          placeholder="Search by invoice number or client name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-9 lg:w-[40%]"
+        />
+      </div>
+
+      <div className="flex flex-wrap items-center gap-2">
+        {FILTERS.map((filter) => {
+          const isActive = selectedFilter === filter.id;
+          const colorClass = isActive ? FILTER_COLORS[filter.id] : "";
+
+          return (
+            <button
+              key={filter.id}
+              onClick={() => setSelectedFilter(filter.id)}
+              className={cn(
+                "flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-all",
+                "hover:bg-gray-50 dark:hover:bg-gray-800",
+                isActive
+                  ? `border-2 ${colorClass}`
+                  : "border-gray-300 bg-white text-gray-700 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300"
+              )}
+            >
+              {filter.color && (
+                <div className={cn("h-2 w-2 rounded-full", filter.color)} />
+              )}
+              <span className="capitalize">{filter.name}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="overflow-x-auto rounded-md border border-gray-200 dark:border-gray-800">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50 dark:bg-gray-800/50">
+              <TableHead className="font-semibold">Invoice #</TableHead>
+              <TableHead className="font-semibold">Due Date</TableHead>
+              <TableHead className="font-semibold">Client</TableHead>
+              <TableHead className="font-semibold">Status</TableHead>
+              <TableHead className="font-semibold">Paid</TableHead>
+              <TableHead className="font-semibold">Due</TableHead>
+              <TableHead className="font-semibold">Total</TableHead>
+              <TableHead className="text-right"></TableHead>
+            </TableRow>
+          </TableHeader>
+          {invoices && invoices.length === 0 ? (
+            <EmptyTableState
+              colSpan={8}
+              title="No Invoices Found"
+              description="Get started by creating your first invoice."
+            />
+          ) : invoices && invoices.length > 0 && filteredInvoices.length === 0 ? (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan={8}>
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                      No invoices match your search
+                    </p>
+                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      Try adjusting your search terms
+                    </p>
+                  </div>
+                </TableCell>
               </TableRow>
-            </TableHeader>
-            {invoices && invoices.length === 0 ? (
-              <EmptyTableState
-                colSpan={8}
-                title="No Invoices Found"
-                description="Looks like you haven't created any invoices yet. Get started by creating your first one."
-              />
-            ) : invoices &&
-              invoices.length > 0 &&
-              filteredInvoices.length === 0 ? (
-              <TableBody>
-                <TableRow>
-                  <TableCell colSpan={8}>
-                    <div className="w-full py-10 text-center font-semibold text-xl">
-                      <p>No invoices match your search!</p>
-                    </div>
+            </TableBody>
+          ) : (
+            <TableBody>
+              {filteredInvoices.map((invoice) => (
+                <TableRow
+                  key={invoice.id}
+                  className="cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-800/50"
+                  onClick={() => goToInvoicePage(invoice.id)}
+                >
+                  <TableCell className="font-medium">
+                    {invoice.invoiceNumber}
+                  </TableCell>
+                  <TableCell className="text-sm text-gray-600 dark:text-gray-400">
+                    {formatDate(invoice.dueDate)}
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {invoice.client?.name || "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    <StatusBadge status={invoice.status} />
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {formatCurrency(invoice.paidAmount)}
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {formatCurrency(invoice.dueAmount)}
+                  </TableCell>
+                  <TableCell className="font-medium">
+                    {formatCurrency(invoice.totalAmount)}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu
+                      open={openDropdownId === invoice.id}
+                      onOpenChange={(isOpen) => {
+                        if (!isPending)
+                          setOpenDropdownId(isOpen ? invoice.id : null);
+                      }}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => e.stopPropagation()}
+                          className="h-8 w-8"
+                        >
+                          <EllipsisVertical className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-32">
+                        <DropdownMenuGroup>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedInvoice(invoice);
+                            }}
+                          >
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              mutate(invoice.id);
+                            }}
+                            className="text-red-600 focus:text-red-600"
+                          >
+                            {isPending && <Spinner className="mr-2" />}
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
-              </TableBody>
-            ) : (
-              <TableBody>
-                {filteredInvoices.map((invoice) => {
-                  return (
-                    <TableRow
-                      key={invoice.id}
-                      className="hover:bg-slate-50"
-                      onClick={() => goToInvoicePage(invoice.id)}
-                    >
-                      <TableCell className="font-medium">
-                        {invoice.invoiceNumber}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {formatDate(invoice.dueDate)}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {invoice.client?.name || "N/A"}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        <StatusBadge status={invoice.status} />
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {formatCurrency(invoice.paidAmount)}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {formatCurrency(invoice.dueAmount)}
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        {formatCurrency(invoice.totalAmount)}
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu
-                          open={openDropdownId === invoice.id}
-                          onOpenChange={(isOpen) => {
-                            if (!isPending)
-                              setOpenDropdownId(isOpen ? invoice.id : null);
-                          }}
-                        >
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              variant="outline"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <EllipsisVertical />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent className="w-20" align="start">
-                            <DropdownMenuGroup>
-                              <DropdownMenuItem
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  setSelectedInvoice(invoice);
-                                }}
-                              >
-                                Edit
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  mutate(invoice.id);
-                                }}
-                              >
-                                {isPending && <Spinner />}
-                                Delete
-                              </DropdownMenuItem>
-                            </DropdownMenuGroup>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            )}
-          </Table>
-          {pagination && (
-            <PaginationControls
-              pagination={pagination}
-              onPageChange={onPageChange}
-            />
+              ))}
+            </TableBody>
           )}
-          <Dialog
-            open={!!selectedInvoice}
-            onOpenChange={() => setSelectedInvoice(null)}
-          >
-            <DialogTrigger asChild>
-              <div />
-            </DialogTrigger>
-            <EditInvoice
-              closeDialog={() => {
-                refreshDetails();
-                setSelectedInvoice(null);
-              }}
-              invoice={selectedInvoice}
-            />
-          </Dialog>
-        </div>
+        </Table>
+      </div>
+
+      {pagination && (
+        <PaginationControls pagination={pagination} onPageChange={onPageChange} />
       )}
+
+      <Dialog
+        open={!!selectedInvoice}
+        onOpenChange={() => setSelectedInvoice(null)}
+      >
+        <DialogTrigger asChild>
+          <div />
+        </DialogTrigger>
+        <EditInvoice
+          closeDialog={() => {
+            refresh();
+            setSelectedInvoice(null);
+          }}
+          invoice={selectedInvoice}
+        />
+      </Dialog>
     </div>
   );
 }

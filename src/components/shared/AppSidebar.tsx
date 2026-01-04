@@ -28,7 +28,6 @@ export function AppSidebar() {
 
   return (
     <Sidebar className="!w-[240px]">
-      {/* Header */}
       <SidebarHeader className="border-b px-4 py-4">
         <Link
           href="/"
@@ -48,7 +47,6 @@ export function AppSidebar() {
         </Link>
       </SidebarHeader>
 
-      {/* Navigation */}
       <SidebarContent className="px-3 py-6">
         <SidebarMenu className="space-y-1">
           {dashboardLinks.map((link) => {
@@ -80,11 +78,9 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarContent>
 
-      {/* User Footer */}
       <SidebarFooter className="border-t p-4">
         {user && (
           <div className="flex items-center gap-3">
-            {/* User Avatar */}
             <div className="relative h-10 w-10 shrink-0">
               {user.image ? (
                 <Image
@@ -101,7 +97,6 @@ export function AppSidebar() {
               )}
             </div>
 
-            {/* User Info */}
             <div className="flex-1 min-w-0">
               <p className="truncate text-sm font-medium text-content-light dark:text-content-dark">
                 {user.name}
@@ -110,8 +105,6 @@ export function AppSidebar() {
                 {user.email}
               </p>
             </div>
-
-            {/* Logout Button */}
             <button
               onClick={handleSignOut}
               className={cn(
