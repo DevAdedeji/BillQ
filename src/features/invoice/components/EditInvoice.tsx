@@ -30,13 +30,14 @@ import { useClients } from "@/features/clients/hooks/useClients";
 import { formatCurrency, getErrorMessage } from "@/utils";
 import CurrencyInput from "@/components/ui/currency-input";
 import { Invoice } from "../types";
+import { cn } from "@/lib/utils";
 
-interface NewInvoiceProps {
+interface EditInvoiceProps {
   closeDialog: () => void;
   invoice: Invoice | null;
 }
 
-export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
+export default function EditInvoice({ closeDialog, invoice }: EditInvoiceProps) {
   const { handleSubmit, reset, control, register, setValue } =
     useForm<InvoiceFormInputs>({
       resolver: zodResolver(invoiceFormSchema),
@@ -47,14 +48,12 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
     name: "items",
   });
 
-  // Watch form values for calculation
   const items = useWatch({ control, name: "items" }) || [];
   const tax = useWatch({ control, name: "tax" }) || 0;
   const discount = useWatch({ control, name: "discount" }) || 0;
   const paidAmount = useWatch({ control, name: "paidAmount" }) || 0;
   const status = useWatch({ control, name: "status" });
 
-  // Calculate totals dynamically
   useEffect(() => {
     const subtotal = items.reduce(
       (acc, curr) => acc + (curr.totalPrice || 0),
@@ -64,20 +63,11 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
     const dueAmount = totalAmount - Number(paidAmount);
     setValue("totalAmount", totalAmount);
     setValue("dueAmount", dueAmount);
+
     if (status === "PAID") {
-      const subtotal = items.reduce(
-        (acc, curr) => acc + (curr.totalPrice || 0),
-        0,
-      );
-      const totalAmount = subtotal + Number(tax) - Number(discount);
       setValue("paidAmount", totalAmount);
       setValue("dueAmount", 0);
     } else if (status === "PARTIALLY_PAID") {
-      const subtotal = items.reduce(
-        (acc, curr) => acc + (curr.totalPrice || 0),
-        0,
-      );
-      const totalAmount = subtotal + Number(tax) - Number(discount);
       const paid = Number(paidAmount) || 0;
       setValue("dueAmount", Math.max(totalAmount - paid, 0));
     }
@@ -89,7 +79,7 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
         invoice?.items && invoice.items.length
           ? invoice.items.map((item) => ({
               name: item.name || "",
-              description: item.description || undefined, // convert null to undefined
+              description: item.description || undefined,
               quantity: item.quantity || 1,
               price: item.price || 0,
               totalPrice: item.totalPrice || 0,
@@ -151,218 +141,248 @@ export default function EditInvoice({ closeDialog, invoice }: NewInvoiceProps) {
   };
 
   return (
-    <DialogContent className="sm:max-w-[850px] max-h-[95vh] overflow-y-auto">
+    <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[900px]">
       <DialogHeader>
         <DialogTitle>Edit Invoice</DialogTitle>
       </DialogHeader>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Invoice details */}
-        <FieldSet>
-          <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-2 md:gap-4">
-            <Field>
-              <FieldLabel>Invoice Number</FieldLabel>
-              <Input {...register("invoiceNumber")} readOnly />
-            </Field>
-            <Field>
-              <FieldLabel>Issue Date</FieldLabel>
-              <Input type="date" {...register("issueDate")} />
-            </Field>
-            <Field>
-              <FieldLabel>Due Date</FieldLabel>
-              <Input type="date" {...register("dueDate")} />
-            </Field>
-          </FieldGroup>
-        </FieldSet>
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50">
+          <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
+            Invoice Details
+          </h3>
+          <FieldSet>
+            <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-3">
+              <Field>
+                <FieldLabel>Invoice Number</FieldLabel>
+                <Input {...register("invoiceNumber")} readOnly />
+              </Field>
+              <Field>
+                <FieldLabel>Issue Date</FieldLabel>
+                <Input type="date" {...register("issueDate")} />
+              </Field>
+              <Field>
+                <FieldLabel>Due Date</FieldLabel>
+                <Input type="date" {...register("dueDate")} />
+              </Field>
+            </FieldGroup>
+          </FieldSet>
+        </div>
 
-        <FieldSet>
-          <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-2 md:gap-4">
-            <Field>
-              <FieldLabel>Client</FieldLabel>
-              <Controller
-                name="clientId"
-                control={control}
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select client" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {clients?.map((client) => (
-                        <SelectItem key={client.id} value={client.id}>
-                          {client.name}
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50">
+          <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
+            Client Information
+          </h3>
+          <FieldSet>
+            <FieldGroup className="grid grid-cols-1 gap-4 md:grid-cols-2">
+              <Field>
+                <FieldLabel>Client</FieldLabel>
+                <Controller
+                  name="clientId"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select client" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {clients?.map((client) => (
+                          <SelectItem key={client.id} value={client.id}>
+                            {client.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </Field>
+
+              <Field>
+                <FieldLabel>Status</FieldLabel>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PENDING">Pending</SelectItem>
+                        <SelectItem value="PARTIALLY_PAID">
+                          Partially Paid
                         </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </Field>
+                        <SelectItem value="PAID">Paid</SelectItem>
+                        <SelectItem value="OVERDUE">Overdue</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+              </Field>
+            </FieldGroup>
+          </FieldSet>
+        </div>
 
-            <Field>
-              <FieldLabel>Status</FieldLabel>
-              <Controller
-                name="status"
-                control={control}
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="PENDING">Pending</SelectItem>
-                      <SelectItem value="PARTIALLY_PAID">
-                        Partially Paid
-                      </SelectItem>
-                      <SelectItem value="PAID">Paid</SelectItem>
-                      <SelectItem value="OVERDUE">Overdue</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-            </Field>
-          </FieldGroup>
-        </FieldSet>
-
-        {/* Items */}
-        <FieldSet>
-          <FieldLabel>Items</FieldLabel>
-          <div className="space-y-4">
-            {fields.map((field, index) => (
-              <div
-                key={field.id}
-                className="grid grid-cols-1 md:grid-cols-2 gap-3 border p-3 rounded-md bg-muted/30"
-              >
-                <Controller
-                  name={`items.${index}.name`}
-                  control={control}
-                  render={({ field }) => (
-                    <Input placeholder="Name" {...field} />
-                  )}
-                />
-                <Controller
-                  name={`items.${index}.quantity`}
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      type="number"
-                      placeholder="Qty"
-                      {...field}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        field.onChange(value);
-                        const price = items[index]?.price || 0;
-                        setValue(`items.${index}.totalPrice`, value * price);
-                      }}
-                    />
-                  )}
-                />
-                <Controller
-                  name={`items.${index}.price`}
-                  control={control}
-                  render={({ field }) => (
-                    <CurrencyInput
-                      type="number"
-                      placeholder="Price"
-                      {...field}
-                      onChange={(e) => {
-                        const value = Number(e.target.value);
-                        field.onChange(value);
-                        const qty = items[index]?.quantity || 0;
-                        setValue(`items.${index}.totalPrice`, qty * value);
-                      }}
-                    />
-                  )}
-                />
-                <p className="text-sm h-10 flex items-center">
-                  Total Price:
-                  <span className="font-medium ml-1">
-                    {formatCurrency(
-                      Number((items[index]?.totalPrice || 0).toFixed(2)),
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
+            Invoice Items
+          </h3>
+          {fields.map((field, index) => (
+            <div
+              key={field.id}
+              className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50"
+            >
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-4">
+                <Field>
+                  <FieldLabel>Name</FieldLabel>
+                  <Controller
+                    name={`items.${index}.name`}
+                    control={control}
+                    render={({ field }) => (
+                      <Input placeholder="Item name" {...field} />
                     )}
-                  </span>
-                </p>
-                <div className="flex items-center justify-between">
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Quantity</FieldLabel>
+                  <Controller
+                    name={`items.${index}.quantity`}
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        type="number"
+                        placeholder="1"
+                        {...field}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          field.onChange(value);
+                          const price = items[index]?.price || 0;
+                          setValue(`items.${index}.totalPrice`, value * price);
+                        }}
+                      />
+                    )}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Price</FieldLabel>
+                  <Controller
+                    name={`items.${index}.price`}
+                    control={control}
+                    render={({ field }) => (
+                      <CurrencyInput
+                        type="number"
+                        placeholder="0.00"
+                        {...field}
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          field.onChange(value);
+                          const qty = items[index]?.quantity || 0;
+                          setValue(`items.${index}.totalPrice`, qty * value);
+                        }}
+                      />
+                    )}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Total</FieldLabel>
+                  <div className="flex h-10 items-center rounded-md border border-gray-200 bg-gray-100 px-3 text-sm font-semibold dark:border-gray-800 dark:bg-gray-900">
+                    {formatCurrency(items[index]?.totalPrice || 0)}
+                  </div>
+                </Field>
+              </div>
+              <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-[1fr_auto]">
+                <Field>
+                  <FieldLabel>Description</FieldLabel>
                   <Controller
                     name={`items.${index}.description`}
                     control={control}
                     render={({ field }) => (
                       <Textarea
-                        placeholder="Description"
-                        className="max-h-[100px]"
+                        placeholder="Item description"
+                        className="resize-none"
+                        rows={2}
                         {...field}
                       />
                     )}
                   />
-                  {fields.length > 0 && (
+                </Field>
+                {fields.length > 1 && (
+                  <div className="flex items-end">
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
                       onClick={() => remove(index)}
+                      className="text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-950/20"
                     >
-                      <Trash2 className="h-4 w-4 text-error" />
+                      <Trash2 className="h-4 w-4" />
                     </Button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            ))}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={addItem}
-              className="flex items-center gap-2"
-            >
-              <PlusCircle className="h-4 w-4" /> Add Item
-            </Button>
-          </div>
-        </FieldSet>
+            </div>
+          ))}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={addItem}
+            className="w-full"
+          >
+            <PlusCircle className="h-4 w-4" />
+            <span>Add Item</span>
+          </Button>
+        </div>
 
-        {/* Totals */}
-        <FieldSet>
-          <FieldGroup className="!grid !grid-cols-1 md:!grid-cols-3 gap-4">
-            <Field>
-              <FieldLabel>Tax</FieldLabel>
-              <CurrencyInput
-                type="number"
-                placeholder="0"
-                {...register("tax", { valueAsNumber: true })}
-              />
-            </Field>
-            <Field>
-              <FieldLabel>Discount</FieldLabel>
-              <CurrencyInput
-                type="number"
-                placeholder="0"
-                {...register("discount", { valueAsNumber: true })}
-              />
-            </Field>
-            <Field>
-              <FieldLabel>Paid Amount</FieldLabel>
-              <CurrencyInput
-                type="number"
-                placeholder="0"
-                {...register("paidAmount", { valueAsNumber: true })}
-              />
-            </Field>
-            <Field>
-              <FieldLabel>Total</FieldLabel>
-              <CurrencyInput
-                {...register("totalAmount", { valueAsNumber: true })}
-                readOnly
-              />
-            </Field>
-          </FieldGroup>
-        </FieldSet>
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-gray-800 dark:bg-gray-800/50">
+          <h3 className="mb-3 text-sm font-semibold text-gray-900 dark:text-white">
+            Payment Details
+          </h3>
+          <FieldSet>
+            <FieldGroup className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <Field>
+                <FieldLabel>Tax</FieldLabel>
+                <CurrencyInput
+                  type="number"
+                  placeholder="0.00"
+                  {...register("tax", { valueAsNumber: true })}
+                />
+              </Field>
+              <Field>
+                <FieldLabel>Discount</FieldLabel>
+                <CurrencyInput
+                  type="number"
+                  placeholder="0.00"
+                  {...register("discount", { valueAsNumber: true })}
+                />
+              </Field>
+              <Field>
+                <FieldLabel>Paid Amount</FieldLabel>
+                <CurrencyInput
+                  type="number"
+                  placeholder="0.00"
+                  {...register("paidAmount", { valueAsNumber: true })}
+                />
+              </Field>
+              <Field>
+                <FieldLabel>Total</FieldLabel>
+                <CurrencyInput
+                  {...register("totalAmount", { valueAsNumber: true })}
+                  readOnly
+                  className="font-semibold"
+                />
+              </Field>
+            </FieldGroup>
+          </FieldSet>
+        </div>
 
-        <DialogFooter className="flex justify-end gap-2">
+        <DialogFooter className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
           <DialogClose asChild>
             <Button type="button" variant="outline">
               Cancel
             </Button>
           </DialogClose>
           <Button type="submit" disabled={isPending}>
-            {isPending && <Spinner />}
+            {isPending && <Spinner className="mr-2" />}
             <span>Save Changes</span>
           </Button>
         </DialogFooter>
